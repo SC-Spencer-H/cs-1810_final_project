@@ -1,11 +1,171 @@
 {
   "version": 3,
   "targets": {
-    "net10.0": {}
+    "net10.0": {
+      "WindowsAPICodePack/8.0.15.2": {
+        "type": "package",
+        "compile": {
+          "lib/net462/Microsoft.WindowsAPICodePack.Core.dll": {
+            "related": ".xml"
+          },
+          "lib/net462/Microsoft.WindowsAPICodePack.ExtendedLinguisticServices.dll": {
+            "related": ".xml"
+          },
+          "lib/net462/Microsoft.WindowsAPICodePack.Sensors.dll": {
+            "related": ".xml"
+          },
+          "lib/net462/Microsoft.WindowsAPICodePack.Shell.dll": {
+            "related": ".xml"
+          },
+          "lib/net462/Microsoft.WindowsAPICodePack.ShellExtensions.dll": {
+            "related": ".xml"
+          },
+          "lib/net462/Microsoft.WindowsAPICodePack.dll": {
+            "related": ".Core.xml;.ExtendedLinguisticServices.xml;.Sensors.xml;.Shell.xml;.ShellExtensions.xml"
+          }
+        },
+        "runtime": {
+          "lib/net462/Microsoft.WindowsAPICodePack.Core.dll": {
+            "related": ".xml"
+          },
+          "lib/net462/Microsoft.WindowsAPICodePack.ExtendedLinguisticServices.dll": {
+            "related": ".xml"
+          },
+          "lib/net462/Microsoft.WindowsAPICodePack.Sensors.dll": {
+            "related": ".xml"
+          },
+          "lib/net462/Microsoft.WindowsAPICodePack.Shell.dll": {
+            "related": ".xml"
+          },
+          "lib/net462/Microsoft.WindowsAPICodePack.ShellExtensions.dll": {
+            "related": ".xml"
+          },
+          "lib/net462/Microsoft.WindowsAPICodePack.dll": {
+            "related": ".Core.xml;.ExtendedLinguisticServices.xml;.Sensors.xml;.Shell.xml;.ShellExtensions.xml"
+          }
+        }
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "WindowsAPICodePack/8.0.15.2": {
+      "sha512": "ucgUKn/HZ2W8/6hBtXFQVlARAHPXujA75W+Md/6xvnsMWFOlmyvzH4YjURQqG/lTKP0yvA/MF2o4fpvtion2NQ==",
+      "type": "package",
+      "path": "windowsapicodepack/8.0.15.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "License.md",
+        "Readme.md",
+        "Windows.png",
+        "lib/net10.0-windows7.0/Microsoft.WindowsAPICodePack.Core.dll",
+        "lib/net10.0-windows7.0/Microsoft.WindowsAPICodePack.Core.xml",
+        "lib/net10.0-windows7.0/Microsoft.WindowsAPICodePack.ExtendedLinguisticServices.dll",
+        "lib/net10.0-windows7.0/Microsoft.WindowsAPICodePack.ExtendedLinguisticServices.xml",
+        "lib/net10.0-windows7.0/Microsoft.WindowsAPICodePack.Sensors.dll",
+        "lib/net10.0-windows7.0/Microsoft.WindowsAPICodePack.Sensors.xml",
+        "lib/net10.0-windows7.0/Microsoft.WindowsAPICodePack.Shell.dll",
+        "lib/net10.0-windows7.0/Microsoft.WindowsAPICodePack.Shell.xml",
+        "lib/net10.0-windows7.0/Microsoft.WindowsAPICodePack.ShellExtensions.dll",
+        "lib/net10.0-windows7.0/Microsoft.WindowsAPICodePack.ShellExtensions.xml",
+        "lib/net10.0-windows7.0/Microsoft.WindowsAPICodePack.dll",
+        "lib/net462/Microsoft.WindowsAPICodePack.Core.dll",
+        "lib/net462/Microsoft.WindowsAPICodePack.Core.xml",
+        "lib/net462/Microsoft.WindowsAPICodePack.ExtendedLinguisticServices.dll",
+        "lib/net462/Microsoft.WindowsAPICodePack.ExtendedLinguisticServices.xml",
+        "lib/net462/Microsoft.WindowsAPICodePack.Sensors.dll",
+        "lib/net462/Microsoft.WindowsAPICodePack.Sensors.xml",
+        "lib/net462/Microsoft.WindowsAPICodePack.Shell.dll",
+        "lib/net462/Microsoft.WindowsAPICodePack.Shell.xml",
+        "lib/net462/Microsoft.WindowsAPICodePack.ShellExtensions.dll",
+        "lib/net462/Microsoft.WindowsAPICodePack.ShellExtensions.xml",
+        "lib/net462/Microsoft.WindowsAPICodePack.dll",
+        "lib/net47/Microsoft.WindowsAPICodePack.Core.dll",
+        "lib/net47/Microsoft.WindowsAPICodePack.Core.xml",
+        "lib/net47/Microsoft.WindowsAPICodePack.ExtendedLinguisticServices.dll",
+        "lib/net47/Microsoft.WindowsAPICodePack.ExtendedLinguisticServices.xml",
+        "lib/net47/Microsoft.WindowsAPICodePack.Sensors.dll",
+        "lib/net47/Microsoft.WindowsAPICodePack.Sensors.xml",
+        "lib/net47/Microsoft.WindowsAPICodePack.Shell.dll",
+        "lib/net47/Microsoft.WindowsAPICodePack.Shell.xml",
+        "lib/net47/Microsoft.WindowsAPICodePack.ShellExtensions.dll",
+        "lib/net47/Microsoft.WindowsAPICodePack.ShellExtensions.xml",
+        "lib/net47/Microsoft.WindowsAPICodePack.dll",
+        "lib/net471/Microsoft.WindowsAPICodePack.Core.dll",
+        "lib/net471/Microsoft.WindowsAPICodePack.Core.xml",
+        "lib/net471/Microsoft.WindowsAPICodePack.ExtendedLinguisticServices.dll",
+        "lib/net471/Microsoft.WindowsAPICodePack.ExtendedLinguisticServices.xml",
+        "lib/net471/Microsoft.WindowsAPICodePack.Sensors.dll",
+        "lib/net471/Microsoft.WindowsAPICodePack.Sensors.xml",
+        "lib/net471/Microsoft.WindowsAPICodePack.Shell.dll",
+        "lib/net471/Microsoft.WindowsAPICodePack.Shell.xml",
+        "lib/net471/Microsoft.WindowsAPICodePack.ShellExtensions.dll",
+        "lib/net471/Microsoft.WindowsAPICodePack.ShellExtensions.xml",
+        "lib/net471/Microsoft.WindowsAPICodePack.dll",
+        "lib/net472/Microsoft.WindowsAPICodePack.Core.dll",
+        "lib/net472/Microsoft.WindowsAPICodePack.Core.xml",
+        "lib/net472/Microsoft.WindowsAPICodePack.ExtendedLinguisticServices.dll",
+        "lib/net472/Microsoft.WindowsAPICodePack.ExtendedLinguisticServices.xml",
+        "lib/net472/Microsoft.WindowsAPICodePack.Sensors.dll",
+        "lib/net472/Microsoft.WindowsAPICodePack.Sensors.xml",
+        "lib/net472/Microsoft.WindowsAPICodePack.Shell.dll",
+        "lib/net472/Microsoft.WindowsAPICodePack.Shell.xml",
+        "lib/net472/Microsoft.WindowsAPICodePack.ShellExtensions.dll",
+        "lib/net472/Microsoft.WindowsAPICodePack.ShellExtensions.xml",
+        "lib/net472/Microsoft.WindowsAPICodePack.dll",
+        "lib/net48/Microsoft.WindowsAPICodePack.Core.dll",
+        "lib/net48/Microsoft.WindowsAPICodePack.Core.xml",
+        "lib/net48/Microsoft.WindowsAPICodePack.ExtendedLinguisticServices.dll",
+        "lib/net48/Microsoft.WindowsAPICodePack.ExtendedLinguisticServices.xml",
+        "lib/net48/Microsoft.WindowsAPICodePack.Sensors.dll",
+        "lib/net48/Microsoft.WindowsAPICodePack.Sensors.xml",
+        "lib/net48/Microsoft.WindowsAPICodePack.Shell.dll",
+        "lib/net48/Microsoft.WindowsAPICodePack.Shell.xml",
+        "lib/net48/Microsoft.WindowsAPICodePack.ShellExtensions.dll",
+        "lib/net48/Microsoft.WindowsAPICodePack.ShellExtensions.xml",
+        "lib/net48/Microsoft.WindowsAPICodePack.dll",
+        "lib/net481/Microsoft.WindowsAPICodePack.Core.dll",
+        "lib/net481/Microsoft.WindowsAPICodePack.Core.xml",
+        "lib/net481/Microsoft.WindowsAPICodePack.ExtendedLinguisticServices.dll",
+        "lib/net481/Microsoft.WindowsAPICodePack.ExtendedLinguisticServices.xml",
+        "lib/net481/Microsoft.WindowsAPICodePack.Sensors.dll",
+        "lib/net481/Microsoft.WindowsAPICodePack.Sensors.xml",
+        "lib/net481/Microsoft.WindowsAPICodePack.Shell.dll",
+        "lib/net481/Microsoft.WindowsAPICodePack.Shell.xml",
+        "lib/net481/Microsoft.WindowsAPICodePack.ShellExtensions.dll",
+        "lib/net481/Microsoft.WindowsAPICodePack.ShellExtensions.xml",
+        "lib/net481/Microsoft.WindowsAPICodePack.dll",
+        "lib/net8.0-windows7.0/Microsoft.WindowsAPICodePack.Core.dll",
+        "lib/net8.0-windows7.0/Microsoft.WindowsAPICodePack.Core.xml",
+        "lib/net8.0-windows7.0/Microsoft.WindowsAPICodePack.ExtendedLinguisticServices.dll",
+        "lib/net8.0-windows7.0/Microsoft.WindowsAPICodePack.ExtendedLinguisticServices.xml",
+        "lib/net8.0-windows7.0/Microsoft.WindowsAPICodePack.Sensors.dll",
+        "lib/net8.0-windows7.0/Microsoft.WindowsAPICodePack.Sensors.xml",
+        "lib/net8.0-windows7.0/Microsoft.WindowsAPICodePack.Shell.dll",
+        "lib/net8.0-windows7.0/Microsoft.WindowsAPICodePack.Shell.xml",
+        "lib/net8.0-windows7.0/Microsoft.WindowsAPICodePack.ShellExtensions.dll",
+        "lib/net8.0-windows7.0/Microsoft.WindowsAPICodePack.ShellExtensions.xml",
+        "lib/net8.0-windows7.0/Microsoft.WindowsAPICodePack.dll",
+        "lib/net9.0-windows7.0/Microsoft.WindowsAPICodePack.Core.dll",
+        "lib/net9.0-windows7.0/Microsoft.WindowsAPICodePack.Core.xml",
+        "lib/net9.0-windows7.0/Microsoft.WindowsAPICodePack.ExtendedLinguisticServices.dll",
+        "lib/net9.0-windows7.0/Microsoft.WindowsAPICodePack.ExtendedLinguisticServices.xml",
+        "lib/net9.0-windows7.0/Microsoft.WindowsAPICodePack.Sensors.dll",
+        "lib/net9.0-windows7.0/Microsoft.WindowsAPICodePack.Sensors.xml",
+        "lib/net9.0-windows7.0/Microsoft.WindowsAPICodePack.Shell.dll",
+        "lib/net9.0-windows7.0/Microsoft.WindowsAPICodePack.Shell.xml",
+        "lib/net9.0-windows7.0/Microsoft.WindowsAPICodePack.ShellExtensions.dll",
+        "lib/net9.0-windows7.0/Microsoft.WindowsAPICodePack.ShellExtensions.xml",
+        "lib/net9.0-windows7.0/Microsoft.WindowsAPICodePack.dll",
+        "windowsapicodepack.8.0.15.2.nupkg.sha512",
+        "windowsapicodepack.nuspec"
+      ]
+    }
+  },
   "projectFileDependencyGroups": {
-    "net10.0": []
+    "net10.0": [
+      "WindowsAPICodePack >= 8.0.15.2"
+    ]
   },
   "packageFolders": {
     "C:\\Users\\Hallwaerd\\.nuget\\packages\\": {}
@@ -51,6 +211,12 @@
     "frameworks": {
       "net10.0": {
         "targetAlias": "net10.0",
+        "dependencies": {
+          "WindowsAPICodePack": {
+            "target": "Package",
+            "version": "[8.0.15.2, )"
+          }
+        },
         "imports": [
           "net461",
           "net462",
@@ -487,5 +653,17 @@
         }
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'WindowsAPICodePack 8.0.15.2' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net10.0'. This package may not be fully compatible with your project.",
+      "libraryId": "WindowsAPICodePack",
+      "targetGraphs": [
+        "net10.0"
+      ]
+    }
+  ]
 }

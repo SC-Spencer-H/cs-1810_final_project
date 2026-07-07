@@ -1,6 +1,11 @@
-var builder = WebApplication.CreateBuilder(args);
-var app = builder.Build();
 
-app.MapGet("/", () => "Hello World!");
+internal partial class Program
+{
+    static void Main()
+    {
+        var tags = FileManager.GetAllTags();
 
-app.Run();
+        WebApplication app = WebTools.InitApp();
+        app.Run();
+    }
+}

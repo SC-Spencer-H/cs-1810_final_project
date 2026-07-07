@@ -1,13 +1,37 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
     <script type="module" src="src/ui.js"></script>
     <title>Document</title>
-</head>
-<body>
-    
-</body>
+  </head>
+  <body>
+    <header></header>
+    <div id="nav-and-main-container">
+      <nav>
+        <p id="preview-file-path">path</p>
+        <img id="preview-image" src="https://placehold.co/200" />
+        <form id="add-tag-form">
+          <div class="input-and-label-container">
+            <label for="tagName">Add Tag</label>
+            <input type="text" name="tagName" id="add-tag-input" />
+          </div>
+        </form>
+        <ol id="tag-list">
+          <li>#tag1<button class="remove-tag-button">X</button></li>
+          <li>#tag2<button class="remove-tag-button">X</button></li>
+          <li>#tag3<button class="remove-tag-button">X</button></li>
+        </ol>
+      </nav>
+      <main>
+        <div class="thumbnail-container">
+          <img src="https://placehold.co/100" />
+          <p class="thumbnail-file-path">path</p>
+        </div>
+      </main>
+    </div>
+    <footer></footer>
+  </body>
 </html>
