@@ -39,4 +39,9 @@ public class FileManager
 
         return tags;
     }
+
+    public static IResult GetImage(string path)
+    {
+        return Results.File(path, "image.jpg");
+    }
 }

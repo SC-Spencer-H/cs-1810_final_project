@@ -104,17 +104,23 @@ footer {
     box-shadow: 0 0 .4em var(--shadow-color);
 }
 
-.thumbnail-container {
+.thumbnail {
     display: flex;
     flex-direction: column;
     margin: 1em;
-
+    width: 10em;
+    
     img {
         border-radius: .3em;
+        width: 10em;
+        box-shadow: .2em .2em .4em var(--shadow-color);
     }
-
+    
     .thumbnail-file-path {
         margin: .3em 0;
         align-self: center;
+        width: 10em;
+        overflow-wrap:break-word;
+        text-align: center;
     }
 }
