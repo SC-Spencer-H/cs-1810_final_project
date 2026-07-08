@@ -1,17 +1,12 @@
-import { FetchFileTags } from "./svc.js";
+import { FetchFiles } from "./svc.js";
 
-var fileTagsDictionary = await FetchFileTags();
-
-var filePathsList = populateFilePaths();
+var files = await FetchFiles();
+console.log(files);
 
 export function GetFilePaths() {
-    return [...filePathsList];
+    return files.map(f => f.path);
 }
 
-function populateFilePaths() {
-    const paths = [];
-    for (const key in fileTagsDictionary) {
-        paths.push(key);
-    }
-    return paths;
+export function GetFile(path) {
+    return files.find(f => f.path === path);
 }

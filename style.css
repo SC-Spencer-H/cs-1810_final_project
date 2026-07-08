@@ -34,12 +34,22 @@ nav {
     padding: 2em;
     z-index: 1;
     box-shadow: 0 0 .4em var(--shadow-color);
-    overflow-y: scroll;      
+    overflow-y: scroll;
     min-width: fit-content;
     scrollbar-color: var(--header-color) var(--nav-color);
 
-    #preview-image {
-        border-radius: .5em;
+    #preview-image-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 20em;
+        height: 20em;
+
+        #preview-image {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: .5em;
+        }
     }
 
     #tag-list {
@@ -54,7 +64,7 @@ nav {
             box-shadow: .1em .1em .2em var(--shadow-color);
             width: fit-content;
             border-radius: .7em;
-            
+
             .remove-tag-button {
                 background-color: var(--text-color);
                 color: var(--header-color);
@@ -68,12 +78,12 @@ nav {
             }
         }
     }
-    
+
     .input-and-label-container {
         display: flex;
         flex-direction: column;
         margin: 1em 0;
-        
+
         input {
             margin: .5em 0;
             background-color: var(--main-color);
@@ -109,18 +119,18 @@ footer {
     flex-direction: column;
     margin: 1em;
     width: 10em;
-    
+
     img {
         border-radius: .3em;
         width: 10em;
         box-shadow: .2em .2em .4em var(--shadow-color);
     }
-    
+
     .thumbnail-file-path {
         margin: .3em 0;
         align-self: center;
         width: 10em;
-        overflow-wrap:break-word;
+        overflow-wrap: break-word;
         text-align: center;
     }
 }

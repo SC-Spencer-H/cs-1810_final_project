@@ -19,7 +19,7 @@ public class FileManager
 
     private FileManager() { }
 
-    public static Dictionary<string, string[]> GetAllTags()
+    public static List<FileData> GetAllTags()
     {
         string[] filePaths = Directory.GetFiles(Instance.WorkingFolderPath);
 
@@ -30,14 +30,15 @@ public class FileManager
             shells[i] = ShellObject.FromParsingName(filePaths[i]);
         }
 
-        Dictionary<string, string[]> tags = new Dictionary<string, string[]>();
+        List<FileData> fileData = new List<FileData>();
 
         for (int i = 0; i < filePaths.Length; i++)
         {
-            tags.Add(filePaths[i], shells[i].Properties.System.Keywords.Value);
+            FileData data = new FileData(filePaths[i], shells[i].Properties.System.Keywords.Value);
+            fileData.Add(data);
         }
 
-        return tags;
+        return fileData;
     }
 
     public static IResult GetImage(string path)

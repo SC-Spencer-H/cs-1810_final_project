@@ -1,8 +1,7 @@
-
 const url = "http://localhost:5104/";
 
-export async function FetchFileTags() {
-    const response = await fetch(url + "tags");
+export async function FetchFiles() {
+    const response = await fetch(url + "files");
     const json = response.json();
     return json;
 }

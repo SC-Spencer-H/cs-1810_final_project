@@ -17,7 +17,7 @@ public static class WebTools
 
     public static void MapRequests(WebApplication app)
     {
-        app.MapGet("/tags", () => JsonSerializer.Serialize(FileManager.GetAllTags()));
+        app.MapGet("/files", () => JsonSerializer.Serialize(FileManager.GetAllTags()));
         app.MapGet("/image", FileManager.GetImage);
     }
 }
