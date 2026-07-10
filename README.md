@@ -1,7 +1,7 @@
 # Spencer's CS-1810 Final
 
 ## Context
-In Windows Explorer, you can right click on a file and select 'Properties' to see various information about the file. In this menu, there is a tab called 'Details', where you can see file-type specific metadata like camera specs or author credit. Many file types have access to a 'Tags' property, which is a semicolon delimited list of arbitrary keywords that can be used to help categorize and index files. I've used this feature for a while with many of my files, especially photos and memes I've saved over the years. When I first starting use the feature, the Explorer GUI would helpfully provide a predictive list of tag suggestions to help speed up the tagging process. But at some point a couple years ago, that capability just disappeared after a Windows update. I've continued to use tags since then, but the user experience has been greatly diminished. 
+In Windows Explorer, you can right click on a file and select 'Properties' to see various information about the file. In this menu, there is a tab called 'Details', where you can see file-type specific metadata like camera specs or author credit. Many file types have access to a 'Tags' property, which is a semicolon delimited list of arbitrary keywords that can be used to help categorize and index files. I've used this feature for a while with many of my files, especially photos and memes I've saved over the years. When I first started using the feature, the Explorer GUI would helpfully provide a predictive list of tag suggestions to help speed up the tagging process. But at some point a couple years ago, that capability just disappeared after a Windows update. I've continued to use tags since then, but the user experience has been greatly diminished. 
 
 ## Pitch
 For my final, I'd like to make a prototype file explorer with support for image tag editing to recapture this workflow. I'll create a custom C# API that indexes all the tag names used in a user-given folder and connects to a web-based GUI. The primary features will be basic image browsing, filtering and sorting, and tag editing.
@@ -28,15 +28,14 @@ After I've got all these core features implemented, I can work on adding sorting
 ## Todo
 
 ### Week 1
-- [ ] General site structure, header, footer, nav
-- [ ] Target folder of API can be configured
-- [ ] API sends paths and tags of all images in folder as JSON
-- [ ] Site displays all images and tags
+- [X] General site structure, header, footer, nav
+- [X] API sends paths and tags of all images in folder as JSON
+- [X] Site displays all images and tags
 ### Week 2
-- [ ] Add form for adding tags
-- [ ] Add buttons for removing tags
-- [ ] Domain creates new tag string with all edits
-- [ ] Service sends new tag string with file path to API
+- [X] Add form for adding tags
+- [X] Add buttons for removing tags
+- [X] Domain creates new tag string with all edits
+- [X] Service sends new tag string with file path to API
 - [ ] Add drag and drop for tag order
 ### Week 3
 - [ ] API stores tag index as JSON
@@ -47,3 +46,4 @@ After I've got all these core features implemented, I can work on adding sorting
 - [ ] Add filter bar, display only files with the filtered tags
 - [ ] Add sorting options: alphabetical, date added, etc.
 - [ ] Add nav link to view tag index on separate page
+- [ ] Target folder of API can be configured

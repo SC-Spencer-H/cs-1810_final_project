@@ -1,0 +1,61 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "api/1.0.0": {
+        "dependencies": {
+          "WindowsAPICodePack": "8.0.15.2"
+        },
+        "runtime": {
+          "api.dll": {}
+        }
+      },
+      "WindowsAPICodePack/8.0.15.2": {
+        "runtime": {
+          "lib/net462/Microsoft.WindowsAPICodePack.Core.dll": {
+            "assemblyVersion": "8.0.15.2",
+            "fileVersion": "8.0.15.2"
+          },
+          "lib/net462/Microsoft.WindowsAPICodePack.ExtendedLinguisticServices.dll": {
+            "assemblyVersion": "8.0.15.2",
+            "fileVersion": "8.0.15.2"
+          },
+          "lib/net462/Microsoft.WindowsAPICodePack.Sensors.dll": {
+            "assemblyVersion": "8.0.15.2",
+            "fileVersion": "8.0.15.2"
+          },
+          "lib/net462/Microsoft.WindowsAPICodePack.Shell.dll": {
+            "assemblyVersion": "8.0.15.2",
+            "fileVersion": "8.0.15.2"
+          },
+          "lib/net462/Microsoft.WindowsAPICodePack.ShellExtensions.dll": {
+            "assemblyVersion": "8.0.15.2",
+            "fileVersion": "8.0.15.2"
+          },
+          "lib/net462/Microsoft.WindowsAPICodePack.dll": {
+            "assemblyVersion": "8.0.15.2",
+            "fileVersion": "8.0.15.2"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "api/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "WindowsAPICodePack/8.0.15.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ucgUKn/HZ2W8/6hBtXFQVlARAHPXujA75W+Md/6xvnsMWFOlmyvzH4YjURQqG/lTKP0yvA/MF2o4fpvtion2NQ==",
+      "path": "windowsapicodepack/8.0.15.2",
+      "hashPath": "windowsapicodepack.8.0.15.2.nupkg.sha512"
+    }
+  }
+}

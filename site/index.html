@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
     <script type="module" src="src/ui.js"></script>
-    <title>Document</title>
+    <title>Tag Manager</title>
   </head>
   <body>
     <header></header>
     <div id="nav-and-main-container">
       <nav>
-        <p id="preview-file-path">path</p>
+        <p id="preview-file-path">No File Selected</p>
         <div id="preview-image-container">
           <img id="preview-image" src="https://placehold.co/200" />
         </div>
@@ -22,14 +22,19 @@
           </div>
         </form>
         <ol id="tag-list">
-          <li>#tag1<button class="remove-tag-button">X</button></li>
-          <li>#tag2<button class="remove-tag-button">X</button></li>
-          <li>#tag3<button class="remove-tag-button">X</button></li>
         </ol>
       </nav>
       <main>
         <div class="thumbnail">
-          <img src="https://placehold.co/100" />
+          <div class="thumbnail-image-container">
+            <img src="https://placehold.co/100" />
+          </div>
+          <p class="thumbnail-file-path">path</p>
+        </div>
+        <div class="thumbnail">
+          <div class="thumbnail-image-container">
+            <img src="https://placehold.co/100x200" />
+          </div>
           <p class="thumbnail-file-path">path</p>
         </div>
       </main>

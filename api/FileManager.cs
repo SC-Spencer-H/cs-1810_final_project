@@ -1,4 +1,5 @@
 using Microsoft.WindowsAPICodePack.Shell;
+using Microsoft.WindowsAPICodePack.Shell.PropertySystem;
 using Microsoft.WindowsAPICodePack.ShellExtensions;
 
 public class FileManager
@@ -30,19 +31,28 @@ public class FileManager
             shells[i] = ShellObject.FromParsingName(filePaths[i]);
         }
 
-        List<FileData> fileData = new List<FileData>();
+        List<FileData> fileList = new List<FileData>();
 
         for (int i = 0; i < filePaths.Length; i++)
         {
             FileData data = new FileData(filePaths[i], shells[i].Properties.System.Keywords.Value);
-            fileData.Add(data);
+            fileList.Add(data);
         }
 
-        return fileData;
+        return fileList;
     }
 
     public static IResult GetImage(string path)
     {
-        return Results.File(path, "image.jpg");
+        return Results.File(path, "image/jpg");
+    }
+
+    public static void SetTags(FileData data)
+    {
+        ShellObject shell = ShellObject.FromParsingName(data.Path);
+
+        var writer = shell.Properties.GetPropertyWriter();
+        writer.WriteProperty(SystemProperties.System.Keywords, data.Tags);
+        writer.Close();
     }
 }
