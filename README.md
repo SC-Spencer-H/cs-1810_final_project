@@ -36,7 +36,7 @@ After I've got all these core features implemented, I can work on adding sorting
 - [X] Add buttons for removing tags
 - [X] Domain creates new tag string with all edits
 - [X] Service sends new tag string with file path to API
-- [ ] Add drag and drop for tag order
+- [X] Add drag and drop for tag order
 ### Week 3
 - [ ] API stores tag index as JSON
 - [ ] API indexes full folder on initialization

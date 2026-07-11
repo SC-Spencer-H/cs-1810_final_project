@@ -1,4 +1,4 @@
-import { AddTag, GetFile, GetFilePaths, RemoveTag } from "./dom.js";
+import { AddTag, GetFile, GetFilePaths, MoveTag, RemoveTag } from "./dom.js";
 import { BuildImageUrl } from "./svc.js";
 
 setupTagForm();
@@ -38,19 +38,18 @@ function renderPreview() {
     previewImageElement.setAttribute("src", BuildImageUrl(path));
 
     tagListElement.replaceChildren();
+    const tagDropDivsContainer = document.getElementById("tag-drop-divs-container");
+    tagDropDivsContainer.replaceChildren();
     if (file.tags !== null) {
-        for (const tag of file.tags) {
-            const tagElement = document.createElement("li");
-            tagElement.textContent = tag;
-            tagElement.setAttribute("tagName", tag);
-            
-            const removeTagButtonElement = document.createElement("button");
-            removeTagButtonElement.classList.add("remove-tag-button");
-            removeTagButtonElement.textContent = "X";
-            removeTagButtonElement.addEventListener("click", removeTagButtonClickHandler);
-            tagElement.appendChild(removeTagButtonElement);
-            
+        for (var i = 0; i < file.tags.length; i++) {
+            const tag = file.tags[i];
+            const tagElement = buildTagElement(tag);
             tagListElement.appendChild(tagElement);
+
+            var dropDiv = buildTagDropDiv(i);
+            tagDropDivsContainer.appendChild(dropDiv);
+            dropDiv = buildTagDropDiv(i + 1);
+            tagDropDivsContainer.appendChild(dropDiv);
         }
     }
 }
@@ -80,6 +79,40 @@ function buildThumbnailElement(path) {
     return thumbnailElement;
 }
 
+function buildTagElement(tag) {
+    const tagElement = document.createElement("li");
+    tagElement.classList.add("tag");
+    tagElement.setAttribute("tagName", tag);
+
+    const tagNameElement = document.createElement("p");
+    tagNameElement.classList.add("tag-name");
+    tagNameElement.textContent = tag;
+
+    const removeTagButtonElement = document.createElement("button");
+    removeTagButtonElement.classList.add("remove-tag-button");
+    removeTagButtonElement.textContent = "X";
+    removeTagButtonElement.addEventListener("click", removeTagHandler);
+
+    tagElement.appendChild(tagNameElement);
+    tagElement.appendChild(removeTagButtonElement);
+
+    tagElement.setAttribute("draggable", true);
+    tagElement.addEventListener("dragstart", tagDragStartHandler)
+    tagElement.addEventListener("dragend", tagDragEndHandler)
+
+    return tagElement;
+}
+
+function buildTagDropDiv(index) {
+    const dropDiv = document.createElement("div");
+    dropDiv.classList.add("tag-drop-div");
+    dropDiv.setAttribute("index", index);
+    dropDiv.addEventListener("dragover", e => e.preventDefault());
+    dropDiv.addEventListener("drop", tagDropHandler);
+
+    return dropDiv;
+}
+
 function thumbnailClickHandler(event) {
     const path = event.currentTarget.getAttribute("path");
     const previewTabElement = document.querySelector("nav");
@@ -107,12 +140,42 @@ function tagFormSubmitHandler(event) {
     renderPreview();
 }
 
-function removeTagButtonClickHandler(event) {
+function removeTagHandler(event) {
     const previewTabElement = document.querySelector("nav");
 
     const tagName = event.currentTarget.parentElement.getAttribute("tagName");
     const filePath = previewTabElement.getAttribute("previewed-file-path");
 
     RemoveTag(filePath, tagName);
+    renderPreview();
+}
+
+function tagDragStartHandler(event) {
+    const tagListElement = document.getElementById("tag-list");
+    const tagDropDivsContainer = document.getElementById("tag-drop-divs-container");
+
+    tagListElement.style.zIndex = "0";
+    tagDropDivsContainer.style.zIndex = "1";
+    
+    const tagName = event.currentTarget.getAttribute("tagName");
+    event.dataTransfer.setData("tagName", tagName);
+}
+
+function tagDragEndHandler(event) {
+    const tagListElement = document.getElementById("tag-list");
+    const tagDropDivsContainer = document.getElementById("tag-drop-divs-container");
+    
+    tagListElement.style.zIndex = "1";
+    tagDropDivsContainer.style.zIndex = "0";
+}
+
+function tagDropHandler(event) {
+    const previewTabElement = document.querySelector("nav");
+
+    const filePath = previewTabElement.getAttribute("previewed-file-path");
+    const tagName = event.dataTransfer.getData("tagName");
+    const newIndex = event.currentTarget.getAttribute("index");
+
+    MoveTag(filePath, tagName, newIndex);
     renderPreview();
 }
