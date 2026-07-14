@@ -35,3 +35,4 @@ C:\Users\Hallwaerd\MyFolders\School\2026-SUMMER\CS-1810\(2026_07_31)_final_proje
 C:\Users\Hallwaerd\MyFolders\School\2026-SUMMER\CS-1810\(2026_07_31)_final_project\cs-1810_final_project\api\obj\Debug\net8.0\api.pdb
 C:\Users\Hallwaerd\MyFolders\School\2026-SUMMER\CS-1810\(2026_07_31)_final_project\cs-1810_final_project\api\obj\Debug\net8.0\api.genruntimeconfig.cache
 C:\Users\Hallwaerd\MyFolders\School\2026-SUMMER\CS-1810\(2026_07_31)_final_project\cs-1810_final_project\api\obj\Debug\net8.0\ref\api.dll
+C:\Users\Hallwaerd\MyFolders\School\2026-SUMMER\CS-1810\(2026_07_31)_final_project\cs-1810_final_project\api\bin\Debug\net8.0\TagIndices\Users-Hallwaerd-MyFolders-School-2026-SUMMER-CS-1810-(2026_07_31)_final_project-cs-1810_final_project-res.json

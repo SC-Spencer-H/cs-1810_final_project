@@ -1,4 +1,4 @@
-import { AddTag, GetFile, GetFilePaths, MoveTag, RemoveTag } from "./dom.js";
+import { AddTag, GetFile, GetFilePaths, GetTagSuggestions, MoveTag, RemoveTag } from "./dom.js";
 import { BuildImageUrl } from "./svc.js";
 
 setupTagForm();
@@ -6,8 +6,10 @@ renderThumbnails();
 
 function setupTagForm() {
     const tagFormElement = document.getElementById("add-tag-form");
-
     tagFormElement.addEventListener("submit", tagFormSubmitHandler);
+
+    const tagInputElement = document.getElementById("add-tag-input");
+    tagInputElement.addEventListener("input", tagInputSuggestHandler);
 }
 
 function renderThumbnails() {
@@ -138,6 +140,22 @@ function tagFormSubmitHandler(event) {
 
     tagFormElement.reset();
     renderPreview();
+}
+
+function tagInputSuggestHandler(event) {
+    const inputValue = event.currentTarget.value;
+    const suggestionListElement = document.getElementById("tag-suggestions");
+    suggestionListElement.replaceChildren();
+
+    if (inputValue === "" || inputValue === undefined)
+        return;
+
+    const tagSuggestions = GetTagSuggestions(inputValue);
+    for (const suggestion of tagSuggestions) {
+        const suggestionElement = document.createElement("option");
+        suggestionElement.setAttribute("value", suggestion.name);
+        suggestionListElement.appendChild(suggestionElement);
+    }
 }
 
 function removeTagHandler(event) {

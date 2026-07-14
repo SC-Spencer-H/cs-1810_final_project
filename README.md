@@ -38,10 +38,10 @@ After I've got all these core features implemented, I can work on adding sorting
 - [X] Service sends new tag string with file path to API
 - [X] Add drag and drop for tag order
 ### Week 3
-- [ ] API stores tag index as JSON
-- [ ] API indexes full folder on initialization
-- [ ] UI searches index on input and provides tag suggestions
-- [ ] User can select tag suggestions with mouse or keyboard
+- [X] API stores tag index as JSON
+- [X] API indexes full folder on initialization
+- [X] UI searches index on input and provides tag suggestions
+- [X] User can select tag suggestions with mouse or keyboard
 ### Week 4
 - [ ] Add filter bar, display only files with the filtered tags
 - [ ] Add sorting options: alphabetical, date added, etc.

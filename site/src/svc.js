@@ -2,8 +2,14 @@ const url = "http://localhost:5104/";
 
 export async function FetchFiles() {
     const response = await fetch(url + "files");
-    const json = response.json();
+    const json = await response.json();
     return json;
+}
+
+export async function FetchIndex() {
+    const response = await fetch(url + "index");
+    const json = await response.json();
+    return json; 
 }
 
 export function BuildImageUrl(path) {

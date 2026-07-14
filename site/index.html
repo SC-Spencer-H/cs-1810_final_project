@@ -15,10 +15,11 @@
         <div id="preview-image-container">
           <img id="preview-image" src="https://placehold.co/200" />
         </div>
-        <form id="add-tag-form">
+        <form id="add-tag-form" autocomplete="off">
           <div class="input-and-label-container">
             <label for="tagName">Add Tag</label>
-            <input type="text" name="tagName" id="add-tag-input" />
+            <input type="text" list="tag-suggestions" name="tagName" id="add-tag-input" />
+            <datalist id="tag-suggestions"></datalist>
           </div>
         </form>
         <div id="tag-list-container">
