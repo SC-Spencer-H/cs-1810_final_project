@@ -49,8 +49,10 @@ function renderPreview() {
             tagListElement.appendChild(tagElement);
 
             var dropDiv = buildTagDropDiv(i);
+            dropDiv.setAttribute("order", "top")
             tagDropDivsContainer.appendChild(dropDiv);
             dropDiv = buildTagDropDiv(i + 1);
+            dropDiv.setAttribute("order", "bottom")
             tagDropDivsContainer.appendChild(dropDiv);
         }
     }
@@ -110,6 +112,8 @@ function buildTagDropDiv(index) {
     dropDiv.classList.add("tag-drop-div");
     dropDiv.setAttribute("index", index);
     dropDiv.addEventListener("dragover", e => e.preventDefault());
+    dropDiv.addEventListener("dragenter", e => e.currentTarget.classList.add("tag-order-preview"));
+    dropDiv.addEventListener("dragleave", e => e.currentTarget.classList.remove("tag-order-preview"));
     dropDiv.addEventListener("drop", tagDropHandler);
 
     return dropDiv;

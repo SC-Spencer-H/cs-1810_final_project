@@ -65,6 +65,14 @@ nav {
             width: 100%;
             padding-top: 2.3em;
         }
+
+        [order="top"].tag-order-preview {
+            border-top: solid .2em var(--main-color);
+        }
+        
+        [order="bottom"].tag-order-preview {
+            border-bottom: solid .2em var(--main-color);
+        }
     }
     
     #tag-list {

@@ -40,11 +40,19 @@ export function RemoveTag(path, tag) {
 }
 
 export function MoveTag(path, tag, index) {
+    console.log(index);
     const file = files.find(f => f.path === path);
+    const tagIndex = file.tags.indexOf(tag);
+    console.log(tagIndex);
+    if (Number.parseInt(index) === Number.parseInt(tagIndex))
+        return;
+    
+    if (index > tagIndex) {
+        index--;
+        if (index < 0)
+            index = 0;
+    }
     file.tags = file.tags.filter(t => t !== tag);
-    index--;
-    if (index < 0)
-        index = 0;
     file.tags.splice(index, 0, tag);
 
     SyncFileTags(file);
@@ -52,7 +60,6 @@ export function MoveTag(path, tag, index) {
 
 export function GetTagSuggestions(input) {
     const suggestions = index.filter(tag => {
-        // console.log(tag.name, tagMatch(tag.name, input));
         if (tagMatch(tag.name, input))
             return true;
 
