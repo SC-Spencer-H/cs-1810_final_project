@@ -1,4 +1,6 @@
-import { FetchFiles, FetchIndex, SyncFileTags } from "./svc.js";
+import { FetchFiles, FetchIndex, SyncFileTags, SetWorkingFolder } from "./svc.js";
+
+/////////////////////////////////////////////////////////////////////////////////////////////
 
 const prefixes = [
     "@",
@@ -9,11 +11,19 @@ const prefixes = [
     "%%",
     "&",
     "#",
-]
+];
 
 var files = [];
 
 var index = [];
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+export async function UpdateWorkingFolder(folderPath) {
+    await SetWorkingFolder(folderPath);
+    await UpdateFiles();
+    await UpdateIndex();
+}
 
 export async function UpdateFiles() {
     files = await FetchFiles();
@@ -23,12 +33,14 @@ export async function UpdateIndex() {
     index = await FetchIndex();
 }
 
-export function GetFilePaths() {
-    return files.map(f => f.path);
-}
+/////////////////////////////////////////////////////////////////////////////////////////////
 
 export function GetFile(path) {
     return files.find(f => f.path === path);
+}
+
+export function GetAllFilePaths() {
+    return files.map(f => f.path);
 }
 
 export function AddTag(path, tag) {
@@ -80,6 +92,21 @@ export function GetTagSuggestions(input) {
     return suggestions;
 }
 
+export function FilterByTags(filterValue) {
+    var filteredFilePaths = [];
+
+    if (findPrefix(filterValue)) {
+        filteredFilePaths = files.filter(f => f.tags.some(t => t === filterValue)).map(f => f.path);
+    }
+    else {
+        filteredFilePaths = files.filter(f => f.tags.some(t => tagMatch(t, filterValue))).map(f => f.path);
+    }
+
+    return filteredFilePaths;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+
 function tagMatch(tagName, value) {
     const valuePrefix = findPrefix(value);
 
@@ -99,6 +126,9 @@ function trimTag(tagName) {
 }
 
 function findPrefix(value) {
+    if (prefixes.length === 0)
+        return "";
+
     const potentialPrefixes = [...prefixes];
 
     for (var i = 0; potentialPrefixes.length > 1; i++) {

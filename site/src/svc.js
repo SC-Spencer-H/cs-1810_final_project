@@ -20,7 +20,7 @@ export async function FetchFiles() {
 export async function FetchIndex() {
     const response = await fetch(url + "index");
     const json = await response.json();
-    return json; 
+    return json;
 }
 
 export function BuildImageUrl(path) {
@@ -36,4 +36,27 @@ export async function SyncFileTags(file) {
         body: JSON.stringify(file),
     };
     const response = await fetch(url + "tags", request);
+}
+
+export function FetchRecentFolders() {
+    return JSON.parse(localStorage.getItem("recentFolderPaths"));
+}
+
+export function StoreRecentFolder(folderPath) {
+    const recentFolderPaths = FetchRecentFolders();
+
+    if (recentFolderPaths) {
+        while (recentFolderPaths.length >= 3) {
+            recentFolderPaths.shift();
+        }
+        if (recentFolderPaths.find(p => p === folderPath) === undefined) {
+            recentFolderPaths.push(folderPath);
+            const recentFolderPathsJson = JSON.stringify(recentFolderPaths);
+            localStorage.setItem("recentFolderPaths", recentFolderPathsJson);
+        }
+    }
+    else {
+        const recentFolderPathsJson = JSON.stringify([folderPath])
+        localStorage.setItem("recentFolderPaths", recentFolderPathsJson);
+    }
 }

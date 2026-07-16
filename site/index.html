@@ -11,11 +11,13 @@
     <header>
       <form id="set-working-folder-form">
         <label for="workingFolder">Open Folder</label>
-        <input type="text" name="workingFolder" id="working-folder-input" value="C:\Users\Hallwaerd\MyFolders\School\2026-SUMMER\CS-1810\(2026_07_31)_final_project\cs-1810_final_project\res"/>
+        <input type="text" name="workingFolder" id="working-folder-input" list="recent-folders" autocomplete="off"/>
+        <datalist id="recent-folders"></datalist>
       </form>
       <form id="filter-form">
         <label for="filters">Search</label>
-        <input type="text" name="filters" id="filter-input"/>
+        <input type="text" name="filters" id="filter-input" list="filter-suggestions" autocomplete="off"/>
+        <datalist id="filter-suggestions"></datalist>
       </form>
     </header>
     <div id="nav-and-main-container">

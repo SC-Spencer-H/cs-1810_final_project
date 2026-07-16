@@ -1,9 +1,10 @@
-import { AddTag, GetFile, GetFilePaths, GetTagSuggestions, MoveTag, RemoveTag, UpdateFiles, UpdateIndex } from "./dom.js";
-import { BuildImageUrl, FetchFiles, SetWorkingFolder } from "./svc.js";
+import { AddTag, GetFile, GetAllFilePaths, GetTagSuggestions, MoveTag, RemoveTag, UpdateFiles, UpdateIndex, UpdateWorkingFolder, FilterByTags } from "./dom.js";
+import { StoreRecentFolder, BuildImageUrl, FetchFiles, SetWorkingFolder, FetchRecentFolders } from "./svc.js";
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 
 setupFolderForm();
+setupFilterForm();
 setupTagForm();
 
 // SETUP ////////////////////////////////////////////////////////////////////////////////////
@@ -11,6 +12,13 @@ setupTagForm();
 function setupFolderForm() {
     const folderFormElement = document.getElementById("set-working-folder-form");
     folderFormElement.addEventListener("submit", folderFormSubmitHandler);
+
+    renderRecentFoldersList();
+}
+
+function setupFilterForm() {
+    const filterFormElement = document.getElementById("filter-form");
+    filterFormElement.addEventListener("submit", filterFormSubmitHandler);
 }
 
 function setupTagForm() {
@@ -21,13 +29,117 @@ function setupTagForm() {
     tagInputElement.addEventListener("input", tagInputSuggestHandler);
 }
 
+// EVENTS ///////////////////////////////////////////////////////////////////////////////////
+
+async function folderFormSubmitHandler(event) {
+    event.preventDefault();
+
+    const folderPathInputElement = document.getElementById("working-folder-input");
+    const folderPath = folderPathInputElement.value;
+
+    await UpdateWorkingFolder(folderPath);
+    StoreRecentFolder(folderPath);
+
+    renderThumbnails(GetAllFilePaths());
+}
+
+function filterFormSubmitHandler(event) {
+    event.preventDefault();
+
+    const filterInputElement = document.getElementById("filter-input");
+    const filterValue = filterInputElement.value
+
+    renderThumbnails(FilterByTags(filterValue));
+}
+
+function tagFormSubmitHandler(event) {
+    event.preventDefault();
+
+    const tagFormElement = document.getElementById("add-tag-form");
+    const previewTabElement = document.querySelector("nav");
+    const previewedFilePath = previewTabElement.getAttribute("previewed-file-path");
+    if (previewedFilePath === null || previewedFilePath === "")
+        return;
+
+    const formData = new FormData(tagFormElement);
+    const tagName = formData.get("tagName")
+    if (tagName === undefined || tagName === "")
+        return;
+
+    AddTag(previewedFilePath, tagName);
+
+    tagFormElement.reset();
+    renderPreview();
+}
+
+function thumbnailClickHandler(event) {
+    const path = event.currentTarget.getAttribute("path");
+    const previewTabElement = document.querySelector("nav");
+    previewTabElement.setAttribute("previewed-file-path", path);
+    renderPreview();
+}
+
+function tagInputSuggestHandler(event) {
+    const inputValue = event.currentTarget.value;
+    const suggestionListElement = document.getElementById("tag-suggestions");
+    suggestionListElement.replaceChildren();
+
+    if (inputValue === "" || inputValue === undefined)
+        return;
+
+    const tagSuggestions = GetTagSuggestions(inputValue);
+    for (const suggestion of tagSuggestions) {
+        const suggestionElement = document.createElement("option");
+        suggestionElement.setAttribute("value", suggestion.name);
+        suggestionListElement.appendChild(suggestionElement);
+    }
+}
+
+function removeTagHandler(event) {
+    const previewTabElement = document.querySelector("nav");
+
+    const tagName = event.currentTarget.parentElement.getAttribute("tagName");
+    const filePath = previewTabElement.getAttribute("previewed-file-path");
+
+    RemoveTag(filePath, tagName);
+    renderPreview();
+}
+
+function tagDragStartHandler(event) {
+    const tagListElement = document.getElementById("tag-list");
+    const tagDropDivsContainer = document.getElementById("tag-drop-divs-container");
+
+    tagListElement.style.zIndex = "0";
+    tagDropDivsContainer.style.zIndex = "1";
+
+    const tagName = event.currentTarget.getAttribute("tagName");
+    event.dataTransfer.setData("tagName", tagName);
+}
+
+function tagDragEndHandler(event) {
+    const tagListElement = document.getElementById("tag-list");
+    const tagDropDivsContainer = document.getElementById("tag-drop-divs-container");
+
+    tagListElement.style.zIndex = "1";
+    tagDropDivsContainer.style.zIndex = "0";
+}
+
+function tagDropHandler(event) {
+    const previewTabElement = document.querySelector("nav");
+
+    const filePath = previewTabElement.getAttribute("previewed-file-path");
+    const tagName = event.dataTransfer.getData("tagName");
+    const newIndex = event.currentTarget.getAttribute("index");
+
+    MoveTag(filePath, tagName, newIndex);
+    renderPreview();
+}
+
 // RENDER ///////////////////////////////////////////////////////////////////////////////////
 
-function renderThumbnails() {
+function renderThumbnails(filePaths) {
     const mainElement = document.querySelector("main");
     mainElement.replaceChildren();
-
-    const filePaths = GetFilePaths();
 
     for (const path of filePaths) {
         const thumbnailElement = buildThumbnailElement(path);
@@ -67,6 +179,22 @@ function renderPreview() {
             tagDropDivsContainer.appendChild(dropDiv);
         }
     }
+}
+
+function renderRecentFoldersList() {
+    const recentFolderPaths = FetchRecentFolders();
+
+    if (recentFolderPaths) {
+        const recentFoldersElement = document.getElementById("recent-folders");
+        recentFoldersElement.replaceChildren();
+
+        for (const path of recentFolderPaths) {
+            const folderPathElement = document.createElement("option");
+            folderPathElement.setAttribute("value", path);
+            recentFoldersElement.appendChild(folderPathElement);
+        }
+    }
+
 }
 
 function buildThumbnailElement(path) {
@@ -128,100 +256,4 @@ function buildTagDropDiv(index) {
     dropDiv.addEventListener("drop", tagDropHandler);
 
     return dropDiv;
-}
-
-// EVENTS ///////////////////////////////////////////////////////////////////////////////////
-
-function thumbnailClickHandler(event) {
-    const path = event.currentTarget.getAttribute("path");
-    const previewTabElement = document.querySelector("nav");
-    previewTabElement.setAttribute("previewed-file-path", path);
-    renderPreview();
-}
-
-function tagFormSubmitHandler(event) {
-    event.preventDefault();
-
-    const tagFormElement = document.getElementById("add-tag-form");
-    const previewTabElement = document.querySelector("nav");
-    const previewedFilePath = previewTabElement.getAttribute("previewed-file-path");
-    if (previewedFilePath === null || previewedFilePath === "")
-        return;
-
-    const formData = new FormData(tagFormElement);
-    const tagName = formData.get("tagName")
-    if (tagName === undefined || tagName === "")
-        return;
-
-    AddTag(previewedFilePath, tagName);
-
-    tagFormElement.reset();
-    renderPreview();
-}
-
-function tagInputSuggestHandler(event) {
-    const inputValue = event.currentTarget.value;
-    const suggestionListElement = document.getElementById("tag-suggestions");
-    suggestionListElement.replaceChildren();
-
-    if (inputValue === "" || inputValue === undefined)
-        return;
-
-    const tagSuggestions = GetTagSuggestions(inputValue);
-    for (const suggestion of tagSuggestions) {
-        const suggestionElement = document.createElement("option");
-        suggestionElement.setAttribute("value", suggestion.name);
-        suggestionListElement.appendChild(suggestionElement);
-    }
-}
-
-function removeTagHandler(event) {
-    const previewTabElement = document.querySelector("nav");
-
-    const tagName = event.currentTarget.parentElement.getAttribute("tagName");
-    const filePath = previewTabElement.getAttribute("previewed-file-path");
-
-    RemoveTag(filePath, tagName);
-    renderPreview();
-}
-
-function tagDragStartHandler(event) {
-    const tagListElement = document.getElementById("tag-list");
-    const tagDropDivsContainer = document.getElementById("tag-drop-divs-container");
-
-    tagListElement.style.zIndex = "0";
-    tagDropDivsContainer.style.zIndex = "1";
-
-    const tagName = event.currentTarget.getAttribute("tagName");
-    event.dataTransfer.setData("tagName", tagName);
-}
-
-function tagDragEndHandler(event) {
-    const tagListElement = document.getElementById("tag-list");
-    const tagDropDivsContainer = document.getElementById("tag-drop-divs-container");
-
-    tagListElement.style.zIndex = "1";
-    tagDropDivsContainer.style.zIndex = "0";
-}
-
-function tagDropHandler(event) {
-    const previewTabElement = document.querySelector("nav");
-
-    const filePath = previewTabElement.getAttribute("previewed-file-path");
-    const tagName = event.dataTransfer.getData("tagName");
-    const newIndex = event.currentTarget.getAttribute("index");
-
-    MoveTag(filePath, tagName, newIndex);
-    renderPreview();
-}
-
-async function folderFormSubmitHandler(event) {
-    event.preventDefault();
-
-    const folderPathInput = document.getElementById("working-folder-input");
-    const folderPath = folderPathInput.value;
-    await SetWorkingFolder(folderPath);
-    await UpdateFiles();
-    await UpdateIndex();
-    renderThumbnails();
 }
