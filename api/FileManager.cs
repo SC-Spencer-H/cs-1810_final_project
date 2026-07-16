@@ -21,7 +21,7 @@ public class FileManager
 
     /////////////////////////////////////////////////////////////////////////////////////////
 
-    private string WorkingFolderPath = @"C:\Users\Hallwaerd\MyFolders\School\2026-SUMMER\CS-1810\(2026_07_31)_final_project\cs-1810_final_project\res";
+    private string WorkingFolderPath { get; set; }
     private List<TagData> TagIndex { get; set; }
 
     /////////////////////////////////////////////////////////////////////////////////////////
@@ -30,9 +30,17 @@ public class FileManager
 
     /////////////////////////////////////////////////////////////////////////////////////////
 
+    public static void SetWorkingFolder(string path)
+    {
+        Instance.WorkingFolderPath = path;
+    }
+
     public static List<FileData> GetFiles()
     {
-        string[] filePaths = Directory.GetFiles(Instance.WorkingFolderPath);
+        if (Instance.WorkingFolderPath == null)
+            throw new InvalidOperationException("Working folder is not set");
+
+        string[] filePaths = Directory.GetFiles(Instance.WorkingFolderPath, "*.*", SearchOption.AllDirectories);
 
         ShellObject[] shells = new ShellObject[filePaths.Length];
 
@@ -54,6 +62,9 @@ public class FileManager
 
     public static List<TagData> GetIndex()
     {
+        if (Instance.WorkingFolderPath == null)
+            throw new InvalidOperationException("Working folder is not set");
+
         if (Instance.TagIndex == null)
         {
             IndexWorkingFolder();
@@ -80,6 +91,9 @@ public class FileManager
 
     private static void IndexWorkingFolder()
     {
+        if (Instance.WorkingFolderPath == null)
+            throw new InvalidOperationException("Working folder is not set");
+
         List<TagData> tagIndex = new List<TagData>();
         string[] filePaths = Directory.GetFiles(Instance.WorkingFolderPath);
 
@@ -105,6 +119,9 @@ public class FileManager
 
     private static List<TagData> LoadTagIndex()
     {
+        if (Instance.WorkingFolderPath == null)
+            throw new InvalidOperationException("Working folder is not set");
+
         string cleanedWorkingFolderPath = string.Join('-', Instance.WorkingFolderPath.Substring(3).Split('\\'));
         string tagIndexFilePath = @$"TagIndices\{cleanedWorkingFolderPath}.json";
         string tagIndexJson = File.ReadAllText(tagIndexFilePath);

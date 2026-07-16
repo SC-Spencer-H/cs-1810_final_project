@@ -1,5 +1,16 @@
 const url = "http://localhost:5104/";
 
+export async function SetWorkingFolder(folderPath) {
+    const request = {
+        method: "POST",
+        headers: {
+            "Content-Type": "text/plain"
+        },
+        body: folderPath,
+    };
+    const response = await fetch(url + "folder?path=" + folderPath, request);
+}
+
 export async function FetchFiles() {
     const response = await fetch(url + "files");
     const json = await response.json();

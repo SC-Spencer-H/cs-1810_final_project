@@ -8,12 +8,21 @@
     <title>Tag Manager</title>
   </head>
   <body>
-    <header></header>
+    <header>
+      <form id="set-working-folder-form">
+        <label for="workingFolder">Open Folder</label>
+        <input type="text" name="workingFolder" id="working-folder-input" value="C:\Users\Hallwaerd\MyFolders\School\2026-SUMMER\CS-1810\(2026_07_31)_final_project\cs-1810_final_project\res"/>
+      </form>
+      <form id="filter-form">
+        <label for="filters">Search</label>
+        <input type="text" name="filters" id="filter-input"/>
+      </form>
+    </header>
     <div id="nav-and-main-container">
       <nav>
         <p id="preview-file-path">No File Selected</p>
         <div id="preview-image-container">
-          <img id="preview-image" src="https://placehold.co/200" />
+          <img id="preview-image" />
         </div>
         <form id="add-tag-form" autocomplete="off">
           <div class="input-and-label-container">
@@ -29,18 +38,6 @@
         </ol>
       </nav>
       <main>
-        <div class="thumbnail">
-          <div class="thumbnail-image-container">
-            <img src="https://placehold.co/100" />
-          </div>
-          <p class="thumbnail-file-path">path</p>
-        </div>
-        <div class="thumbnail">
-          <div class="thumbnail-image-container">
-            <img src="https://placehold.co/100x200" />
-          </div>
-          <p class="thumbnail-file-path">path</p>
-        </div>
       </main>
     </div>
     <footer></footer>

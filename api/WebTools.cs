@@ -21,5 +21,6 @@ public static class WebTools
         app.MapGet("/index", () => JsonSerializer.Serialize(FileManager.GetIndex()));
         app.MapGet("/image", FileManager.GetImage);
         app.MapPost("/tags", FileManager.SetTags);
+        app.MapPost("/folder", FileManager.SetWorkingFolder);
     }
 }

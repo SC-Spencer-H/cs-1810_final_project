@@ -11,9 +11,17 @@ const prefixes = [
     "#",
 ]
 
-var files = await FetchFiles();
+var files = [];
 
-var index = await FetchIndex();
+var index = [];
+
+export async function UpdateFiles() {
+    files = await FetchFiles();
+}
+
+export async function UpdateIndex() {
+    index = await FetchIndex();
+}
 
 export function GetFilePaths() {
     return files.map(f => f.path);
@@ -46,7 +54,7 @@ export function MoveTag(path, tag, index) {
     console.log(tagIndex);
     if (Number.parseInt(index) === Number.parseInt(tagIndex))
         return;
-    
+
     if (index > tagIndex) {
         index--;
         if (index < 0)

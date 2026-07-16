@@ -1,8 +1,17 @@
-import { AddTag, GetFile, GetFilePaths, GetTagSuggestions, MoveTag, RemoveTag } from "./dom.js";
-import { BuildImageUrl } from "./svc.js";
+import { AddTag, GetFile, GetFilePaths, GetTagSuggestions, MoveTag, RemoveTag, UpdateFiles, UpdateIndex } from "./dom.js";
+import { BuildImageUrl, FetchFiles, SetWorkingFolder } from "./svc.js";
 
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+setupFolderForm();
 setupTagForm();
-renderThumbnails();
+
+// SETUP ////////////////////////////////////////////////////////////////////////////////////
+
+function setupFolderForm() {
+    const folderFormElement = document.getElementById("set-working-folder-form");
+    folderFormElement.addEventListener("submit", folderFormSubmitHandler);
+}
 
 function setupTagForm() {
     const tagFormElement = document.getElementById("add-tag-form");
@@ -11,6 +20,8 @@ function setupTagForm() {
     const tagInputElement = document.getElementById("add-tag-input");
     tagInputElement.addEventListener("input", tagInputSuggestHandler);
 }
+
+// RENDER ///////////////////////////////////////////////////////////////////////////////////
 
 function renderThumbnails() {
     const mainElement = document.querySelector("main");
@@ -119,6 +130,8 @@ function buildTagDropDiv(index) {
     return dropDiv;
 }
 
+// EVENTS ///////////////////////////////////////////////////////////////////////////////////
+
 function thumbnailClickHandler(event) {
     const path = event.currentTarget.getAttribute("path");
     const previewTabElement = document.querySelector("nav");
@@ -178,7 +191,7 @@ function tagDragStartHandler(event) {
 
     tagListElement.style.zIndex = "0";
     tagDropDivsContainer.style.zIndex = "1";
-    
+
     const tagName = event.currentTarget.getAttribute("tagName");
     event.dataTransfer.setData("tagName", tagName);
 }
@@ -186,7 +199,7 @@ function tagDragStartHandler(event) {
 function tagDragEndHandler(event) {
     const tagListElement = document.getElementById("tag-list");
     const tagDropDivsContainer = document.getElementById("tag-drop-divs-container");
-    
+
     tagListElement.style.zIndex = "1";
     tagDropDivsContainer.style.zIndex = "0";
 }
@@ -200,4 +213,15 @@ function tagDropHandler(event) {
 
     MoveTag(filePath, tagName, newIndex);
     renderPreview();
+}
+
+async function folderFormSubmitHandler(event) {
+    event.preventDefault();
+
+    const folderPathInput = document.getElementById("working-folder-input");
+    const folderPath = folderPathInput.value;
+    await SetWorkingFolder(folderPath);
+    await UpdateFiles();
+    await UpdateIndex();
+    renderThumbnails();
 }
