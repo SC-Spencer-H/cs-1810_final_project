@@ -3,45 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="style.css" />
-    <script type="module" src="src/ui.js"></script>
     <title>Tag Manager</title>
+    <script type="module" src="site.js"></script>
   </head>
-  <body>
-    <header>
-      <form id="set-working-folder-form">
-        <label for="workingFolder">Open Folder</label>
-        <input type="text" name="workingFolder" id="working-folder-input" list="recent-folders" autocomplete="off"/>
-        <datalist id="recent-folders"></datalist>
-      </form>
-      <form id="filter-form">
-        <label for="filters">Search</label>
-        <input type="text" name="filters" id="filter-input" list="filter-suggestions" autocomplete="off"/>
-        <datalist id="filter-suggestions"></datalist>
-      </form>
-    </header>
-    <div id="nav-and-main-container">
-      <nav>
-        <p id="preview-file-path">No File Selected</p>
-        <div id="preview-image-container">
-          <img id="preview-image" />
-        </div>
-        <form id="add-tag-form" autocomplete="off">
-          <div class="input-and-label-container">
-            <label for="tagName">Add Tag</label>
-            <input type="text" list="tag-suggestions" name="tagName" id="add-tag-input" />
-            <datalist id="tag-suggestions"></datalist>
-          </div>
-        </form>
-        <div id="tag-list-container">
-          <div id="tag-drop-divs-container"></div>
-          <ol id="tag-list">
-        </div>
-        </ol>
-      </nav>
-      <main>
-      </main>
-    </div>
-    <footer></footer>
-  </body>
+  <body></body>
 </html>

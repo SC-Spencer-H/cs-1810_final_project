@@ -206,8 +206,21 @@ main {
 }
 
 footer {
+    display:flex;
+    justify-content: center;
     background-color: var(--footer-color);
     padding: 2em;
     z-index: 2;
     box-shadow: 0 0 .4em var(--shadow-color);
+
+    a {
+        color: var(--text-color);
+        background-color: var(--nav-color);
+        text-decoration: none;
+        padding: 0.6em 1em;
+        width: fit-content;
+
+        border-radius: .8em;
+        box-shadow: .15em .15em .1em var(--shadow-color);
+    }
 }

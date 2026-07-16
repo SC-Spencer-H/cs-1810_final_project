@@ -1,8 +1,13 @@
-import { AddTag, GetFile, GetAllFilePaths, GetTagSuggestions, MoveTag, RemoveTag, UpdateFiles, UpdateIndex, UpdateWorkingFolder, FilterByTags } from "./dom.js";
-import { StoreRecentFolder, BuildImageUrl, FetchFiles, SetWorkingFolder, FetchRecentFolders } from "./svc.js";
+import { AddTag, GetFile, GetAllFilePaths, GetTagSuggestions, MoveTag, RemoveTag, UpdateFiles, UpdateIndex, UpdateWorkingFolder, FilterByTags } from "/src/dom/dom.js";
+import { StoreRecentFolder, BuildImageUrl, FetchFiles, SetWorkingFolder, FetchRecentFolders } from "/src/svc/svc.js";
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 
+const recentFolders = FetchRecentFolders();
+if (recentFolders) {
+    await UpdateWorkingFolder(recentFolders[0]);
+    renderThumbnails(GetAllFilePaths());
+}
 setupFolderForm();
 setupFilterForm();
 setupTagForm();
@@ -74,8 +79,13 @@ function tagFormSubmitHandler(event) {
 
 function thumbnailClickHandler(event) {
     const path = event.currentTarget.getAttribute("path");
+
     const previewTabElement = document.querySelector("nav");
     previewTabElement.setAttribute("previewed-file-path", path);
+
+    const addTagInputElement = document.getElementById("add-tag-form");;
+    addTagInputElement.removeAttribute("hidden");
+
     renderPreview();
 }
 

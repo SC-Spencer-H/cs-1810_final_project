@@ -1,6 +1,8 @@
-import { FetchFiles, FetchIndex, SyncFileTags, SetWorkingFolder } from "./svc.js";
+import { FetchFiles, FetchIndex, SyncFileTags, SetWorkingFolder } from "/src/svc/svc.js";
 
 /////////////////////////////////////////////////////////////////////////////////////////////
+
+var workingFolderPath = undefined;
 
 const prefixes = [
     "@",
@@ -20,6 +22,7 @@ var index = [];
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 export async function UpdateWorkingFolder(folderPath) {
+    workingFolderPath = folderPath;
     await SetWorkingFolder(folderPath);
     await UpdateFiles();
     await UpdateIndex();
