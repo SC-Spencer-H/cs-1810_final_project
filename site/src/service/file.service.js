@@ -47,10 +47,10 @@ export function StoreRecentFolder(folderPath) {
 
     if (recentFolderPaths) {
         while (recentFolderPaths.length >= 3) {
-            recentFolderPaths.shift();
+            recentFolderPaths.pop();
         }
         if (recentFolderPaths.find(p => p === folderPath) === undefined) {
-            recentFolderPaths.push(folderPath);
+            recentFolderPaths.unshift(folderPath);
             const recentFolderPathsJson = JSON.stringify(recentFolderPaths);
             localStorage.setItem("recentFolderPaths", recentFolderPathsJson);
         }

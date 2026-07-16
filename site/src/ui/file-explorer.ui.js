@@ -1,16 +1,16 @@
-import { AddTag, GetFile, GetAllFilePaths, GetTagSuggestions, MoveTag, RemoveTag, UpdateFiles, UpdateIndex, UpdateWorkingFolder, FilterByTags } from "/src/dom/dom.js";
-import { StoreRecentFolder, BuildImageUrl, FetchFiles, SetWorkingFolder, FetchRecentFolders } from "/src/svc/svc.js";
+import * as FileManager from "/src/domain/file-explorer.domain.js";
+import * as FileService from "/src/service/file.service.js";
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 
-const recentFolders = FetchRecentFolders();
-if (recentFolders) {
-    await UpdateWorkingFolder(recentFolders[0]);
-    renderThumbnails(GetAllFilePaths());
-}
 setupFolderForm();
 setupFilterForm();
 setupTagForm();
+
+if (FileService.FetchRecentFolders()) {
+    await FileManager.UpdateFiles();
+    renderThumbnails();
+}
 
 // SETUP ////////////////////////////////////////////////////////////////////////////////////
 
@@ -42,10 +42,10 @@ async function folderFormSubmitHandler(event) {
     const folderPathInputElement = document.getElementById("working-folder-input");
     const folderPath = folderPathInputElement.value;
 
-    await UpdateWorkingFolder(folderPath);
-    StoreRecentFolder(folderPath);
+    await FileManager.UpdateWorkingFolder(folderPath);
+    FileService.StoreRecentFolder(folderPath);
 
-    renderThumbnails(GetAllFilePaths());
+    renderThumbnails();
 }
 
 function filterFormSubmitHandler(event) {
@@ -54,7 +54,7 @@ function filterFormSubmitHandler(event) {
     const filterInputElement = document.getElementById("filter-input");
     const filterValue = filterInputElement.value
 
-    renderThumbnails(FilterByTags(filterValue));
+    // renderThumbnails(FilterByTags(filterValue));
 }
 
 function tagFormSubmitHandler(event) {
@@ -71,7 +71,7 @@ function tagFormSubmitHandler(event) {
     if (tagName === undefined || tagName === "")
         return;
 
-    AddTag(previewedFilePath, tagName);
+    FileManager.AddTag(previewedFilePath, tagName);
 
     tagFormElement.reset();
     renderPreview();
@@ -97,7 +97,7 @@ function tagInputSuggestHandler(event) {
     if (inputValue === "" || inputValue === undefined)
         return;
 
-    const tagSuggestions = GetTagSuggestions(inputValue);
+    const tagSuggestions = FileManager.GetTagSuggestions(inputValue);
     for (const suggestion of tagSuggestions) {
         const suggestionElement = document.createElement("option");
         suggestionElement.setAttribute("value", suggestion.name);
@@ -111,7 +111,7 @@ function removeTagHandler(event) {
     const tagName = event.currentTarget.parentElement.getAttribute("tagName");
     const filePath = previewTabElement.getAttribute("previewed-file-path");
 
-    RemoveTag(filePath, tagName);
+    FileManager.RemoveTag(filePath, tagName);
     renderPreview();
 }
 
@@ -141,15 +141,17 @@ function tagDropHandler(event) {
     const tagName = event.dataTransfer.getData("tagName");
     const newIndex = event.currentTarget.getAttribute("index");
 
-    MoveTag(filePath, tagName, newIndex);
+    FileManager.MoveTag(filePath, tagName, newIndex);
     renderPreview();
 }
 
 // RENDER ///////////////////////////////////////////////////////////////////////////////////
 
-function renderThumbnails(filePaths) {
+function renderThumbnails() {
     const mainElement = document.querySelector("main");
     mainElement.replaceChildren();
+
+    const filePaths = FileManager.GetFocusedFilePaths();
 
     for (const path of filePaths) {
         const thumbnailElement = buildThumbnailElement(path);
@@ -160,7 +162,7 @@ function renderThumbnails(filePaths) {
 function renderPreview() {
     const previewTabElement = document.querySelector("nav");
     const path = previewTabElement.getAttribute("previewed-file-path");
-    const file = GetFile(path);
+    const file = FileManager.GetFile(path);
 
     const previewPathElement = document.getElementById("preview-file-path");
     const previewImageElement = document.getElementById("preview-image");
@@ -170,7 +172,7 @@ function renderPreview() {
     const shortPath = splitPath[splitPath.length - 1];
     previewPathElement.textContent = shortPath;
 
-    previewImageElement.setAttribute("src", BuildImageUrl(path));
+    previewImageElement.setAttribute("src", FileService.BuildImageUrl(path));
 
     tagListElement.replaceChildren();
     const tagDropDivsContainer = document.getElementById("tag-drop-divs-container");
@@ -192,7 +194,7 @@ function renderPreview() {
 }
 
 function renderRecentFoldersList() {
-    const recentFolderPaths = FetchRecentFolders();
+    const recentFolderPaths = FileService.FetchRecentFolders();
 
     if (recentFolderPaths) {
         const recentFoldersElement = document.getElementById("recent-folders");
@@ -215,7 +217,7 @@ function buildThumbnailElement(path) {
     const thumbnailImageContainer = document.createElement("div");
     thumbnailImageContainer.classList.add("thumbnail-image-container");
     const thumbnailImageElement = document.createElement("img");
-    thumbnailImageElement.setAttribute("src", BuildImageUrl(path));
+    thumbnailImageElement.setAttribute("src", FileService.BuildImageUrl(path));
     thumbnailImageContainer.appendChild(thumbnailImageElement);
 
     const thumbnailPathElement = document.createElement("p");

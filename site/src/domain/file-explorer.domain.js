@@ -1,4 +1,4 @@
-import { FetchFiles, FetchIndex, SyncFileTags, SetWorkingFolder } from "/src/svc/svc.js";
+import * as FileService from "/src/service/file.service.js";
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -15,58 +15,64 @@ const prefixes = [
     "#",
 ];
 
-var files = [];
+var allFiles = [];
 
-var index = [];
+var tagIndex = [];
+
+var focusedFiles = [];
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 export async function UpdateWorkingFolder(folderPath) {
     workingFolderPath = folderPath;
-    await SetWorkingFolder(folderPath);
+    await FileService.SetWorkingFolder(folderPath);
     await UpdateFiles();
+    focusedFiles = [...allFiles];
     await UpdateIndex();
 }
 
 export async function UpdateFiles() {
-    files = await FetchFiles();
+    allFiles = await FileService.FetchFiles();
+    focusedFiles = [...allFiles];
 }
 
 export async function UpdateIndex() {
-    index = await FetchIndex();
+    tagIndex = await FileService.FetchIndex();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 export function GetFile(path) {
-    return files.find(f => f.path === path);
+    return allFiles.find(f => f.path === path);
 }
 
 export function GetAllFilePaths() {
-    return files.map(f => f.path);
+    return allFiles.map(f => f.path);
+}
+
+export function GetFocusedFilePaths() {
+    return focusedFiles.map(f => f.path);
 }
 
 export function AddTag(path, tag) {
-    const file = files.find(f => f.path === path);
+    const file = allFiles.find(f => f.path === path);
     if (file.tags === null)
         file.tags = [];
     file.tags = [...file.tags, tag];
 
-    SyncFileTags(file);
+    FileService.SyncFileTags(file);
 }
 
 export function RemoveTag(path, tag) {
-    const file = files.find(f => f.path === path);
+    const file = allFiles.find(f => f.path === path);
     file.tags = file.tags.filter(t => t !== tag);
 
-    SyncFileTags(file);
+    FileService.SyncFileTags(file);
 }
 
 export function MoveTag(path, tag, index) {
-    console.log(index);
-    const file = files.find(f => f.path === path);
+    const file = allFiles.find(f => f.path === path);
     const tagIndex = file.tags.indexOf(tag);
-    console.log(tagIndex);
     if (Number.parseInt(index) === Number.parseInt(tagIndex))
         return;
 
@@ -78,11 +84,11 @@ export function MoveTag(path, tag, index) {
     file.tags = file.tags.filter(t => t !== tag);
     file.tags.splice(index, 0, tag);
 
-    SyncFileTags(file);
+    FileService.SyncFileTags(file);
 }
 
 export function GetTagSuggestions(input) {
-    const suggestions = index.filter(tag => {
+    const suggestions = tagIndex.filter(tag => {
         if (tagMatch(tag.name, input))
             return true;
 
@@ -99,10 +105,10 @@ export function FilterByTags(filterValue) {
     var filteredFilePaths = [];
 
     if (findPrefix(filterValue)) {
-        filteredFilePaths = files.filter(f => f.tags.some(t => t === filterValue)).map(f => f.path);
+        filteredFilePaths = allFiles.filter(f => f.tags.some(t => t === filterValue)).map(f => f.path);
     }
     else {
-        filteredFilePaths = files.filter(f => f.tags.some(t => tagMatch(t, filterValue))).map(f => f.path);
+        filteredFilePaths = allFiles.filter(f => f.tags.some(t => tagMatch(t, filterValue))).map(f => f.path);
     }
 
     return filteredFilePaths;
