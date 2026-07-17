@@ -1,7 +1,9 @@
 [
   {
     "name": "#cat",
-    "aliases": null
+    "aliases": [
+      "#neko"
+    ]
   },
   {
     "name": "#photo",

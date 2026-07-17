@@ -5,7 +5,7 @@ public class TagData
     [JsonPropertyName("name")]
     public string Name { get; set; }
     [JsonPropertyName("aliases")]
-    public string[] Aliases { get; set; }
+    public List<string> Aliases { get; set; }
 
     public TagData(string name)
     {
@@ -13,7 +13,7 @@ public class TagData
         Aliases = CreateAliases(name);
     }
 
-    private string[] CreateAliases(string name)
+    private List<string> CreateAliases(string name)
     {
         return null;
     }

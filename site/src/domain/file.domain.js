@@ -21,6 +21,9 @@ var tagIndex = [];
 
 var focusedFiles = [];
 
+await UpdateFiles();
+await UpdateIndex();
+
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 export async function UpdateWorkingFolder(folderPath) {
@@ -54,6 +57,10 @@ export function GetFocusedFilePaths() {
     return focusedFiles.map(f => f.path);
 }
 
+export function GetTagIndex() {
+    return [...tagIndex];
+}
+
 export function AddTag(path, tag) {
     const file = allFiles.find(f => f.path === path);
     if (file.tags === null)
@@ -61,6 +68,39 @@ export function AddTag(path, tag) {
     file.tags = [...file.tags, tag];
 
     FileService.SyncFileTags(file);
+}
+
+export function GetAliases(tagName) {
+    return GetTag(tagName).aliases;
+}
+
+export function AddAlias(tagName, aliasName) {
+    const tag = GetTag(tagName);
+
+    if (tag.aliases === null)
+        tag.aliases = [];
+
+    tag.aliases.push(aliasName);
+
+    FileService.AddAlias(tagName, aliasName);
+}
+
+export function RemoveAlias(tagName, aliasName) {
+    const tag = GetTag(tagName);
+    
+    if (tag.aliases === null)
+        return;
+    
+    const aliasIndex = tag.aliases.indexOf(aliasName);
+    if (aliasIndex >= 0) {
+        tag.aliases.splice(aliasIndex, 1);
+    }
+    
+    FileService.RemoveAlias(tagName, aliasName);
+}
+
+export function GetTag(name) {
+    return tagIndex.find(t => t.name === name);
 }
 
 export function RemoveTag(path, tag) {
@@ -102,16 +142,39 @@ export function GetTagSuggestions(input) {
 }
 
 export function FilterByTags(filterValue) {
-    var filteredFilePaths = [];
+    var filteredFiles = [];
 
     if (findPrefix(filterValue)) {
-        filteredFilePaths = allFiles.filter(f => f.tags.some(t => t === filterValue)).map(f => f.path);
+        filteredFiles = allFiles.filter(file => {
+            return file.tags.some(tag => {
+                if (tag === filterValue)
+                   return true;
+                
+                if (!GetAliases(tag))
+                    return false;
+
+                return GetAliases(tag).some(a => a === filterValue)
+            });
+        });
     }
     else {
-        filteredFilePaths = allFiles.filter(f => f.tags.some(t => tagMatch(t, filterValue))).map(f => f.path);
+        filteredFiles = allFiles.filter(file => {
+            if (!file.tags)
+                return false;
+
+            return file.tags.some(tag => {
+                if (tagMatch(tag, filterValue))
+                    return true;
+
+                if (!GetAliases(tag))
+                    return false;
+
+                return GetAliases(tag).some(a => tagMatch(a, filterValue));
+            });
+        });
     }
 
-    return filteredFilePaths;
+    focusedFiles = filteredFiles;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -123,6 +186,7 @@ function tagMatch(tagName, value) {
         return tagName.startsWith(value);
     }
     else {
+
         const trimmedTagName = trimTag(tagName);
         return trimmedTagName.startsWith(value);
     }

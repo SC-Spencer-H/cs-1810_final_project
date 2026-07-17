@@ -38,6 +38,34 @@ export async function SyncFileTags(file) {
     const response = await fetch(url + "tags", request);
 }
 
+export async function AddAlias(tagName, aliasName) {
+    const request = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            tagName: tagName,
+            aliasName: aliasName
+        })
+    };
+    const response = await fetch(url + "addAlias", request);
+}
+
+export async function RemoveAlias(tagName, aliasName) {
+    const request = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            tagName: tagName,
+            aliasName: aliasName
+        })
+    };
+    const response = await fetch(url + "removeAlias", request);
+}
+
 export function FetchRecentFolders() {
     return JSON.parse(localStorage.getItem("recentFolderPaths"));
 }

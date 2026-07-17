@@ -1,4 +1,4 @@
-import * as FileManager from "/src/domain/file-explorer.domain.js";
+import * as FileManager from "/src/domain/file.domain.js";
 import * as FileService from "/src/service/file.service.js";
 
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -54,7 +54,8 @@ function filterFormSubmitHandler(event) {
     const filterInputElement = document.getElementById("filter-input");
     const filterValue = filterInputElement.value
 
-    // renderThumbnails(FilterByTags(filterValue));
+    FileManager.FilterByTags(filterValue);
+    renderThumbnails();
 }
 
 function tagFormSubmitHandler(event) {

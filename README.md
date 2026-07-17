@@ -45,5 +45,5 @@ After I've got all these core features implemented, I can work on adding sorting
 ### Week 4
 - [X] Add filter bar, display only files with the filtered tags
 - [ ] Add sorting options: alphabetical, date added, etc.
-- [ ] Add nav link to view tag index on separate page
+- [X] Add nav link to view tag index on separate page
 - [X] Target folder of API can be configured

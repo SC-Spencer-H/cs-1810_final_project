@@ -22,5 +22,7 @@ public static class WebTools
         app.MapGet("/image", FileManager.GetImage);
         app.MapPost("/tags", FileManager.SetTags);
         app.MapPost("/folder", FileManager.SetWorkingFolder);
+        app.MapPost("/addAlias", FileManager.AddAlias);
+        app.MapPost("/removeAlias", FileManager.RemoveAlias);
     }
 }

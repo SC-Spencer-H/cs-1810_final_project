@@ -87,14 +87,56 @@ public class FileManager
         writer.Close();
     }
 
+    public static void AddAlias(AliasRequestArgs args)
+    {
+        var test = Instance.TagIndex;
+
+        TagData tag = Instance.TagIndex.Find(t => t.Name == args.TagName);
+
+        if (tag.Aliases == null)
+            tag.Aliases = new List<string>();
+
+        tag.Aliases.Add(args.AliasName);
+
+        SaveTagIndex();
+    }
+
+    public static void RemoveAlias(AliasRequestArgs args)
+    {
+        TagData tag = Instance.TagIndex.Find(t => t.Name == args.TagName);
+
+        if (tag.Aliases == null)
+            return;
+
+        tag.Aliases.Remove(args.AliasName);
+
+        SaveTagIndex();
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////////
+
+    private static void SaveTagIndex()
+    {
+        if (Instance.WorkingFolderPath == null)
+            throw new InvalidOperationException("Working folder is not set");
+        if (Instance.TagIndex == null)
+            throw new InvalidOperationException("Tag index not loaded");
+
+        string tagIndexJson = JsonSerializer.Serialize(Instance.TagIndex, new JsonSerializerOptions() { WriteIndented = true });
+        string cleanedWorkingFolderPath = string.Join('-', Instance.WorkingFolderPath.Substring(3).Split('\\'));
+        string tagIndexFilePath = @$"TagIndices\{cleanedWorkingFolderPath}.json";
+        File.WriteAllText(tagIndexFilePath, tagIndexJson);
+    }
 
     private static void IndexWorkingFolder()
     {
         if (Instance.WorkingFolderPath == null)
             throw new InvalidOperationException("Working folder is not set");
 
-        List<TagData> tagIndex = new List<TagData>();
+        List<TagData> tagIndex = LoadTagIndex();
+        if (tagIndex == null)
+            tagIndex = new List<TagData>();
+            
         string[] filePaths = Directory.GetFiles(Instance.WorkingFolderPath);
 
         foreach (string path in filePaths)
