@@ -36,5 +36,17 @@
   {
     "name": "#seal",
     "aliases": null
+  },
+  {
+    "name": "$gore-tex",
+    "aliases": null
+  },
+  {
+    "name": "$logitech",
+    "aliases": null
+  },
+  {
+    "name": "$vocaloid",
+    "aliases": null
   }
 ]

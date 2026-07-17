@@ -85,6 +85,8 @@ public class FileManager
         var writer = shell.Properties.GetPropertyWriter();
         writer.WriteProperty(SystemProperties.System.Keywords, data.Tags);
         writer.Close();
+
+        IndexWorkingFolder();
     }
 
     public static void AddAlias(AliasRequestArgs args)
@@ -136,7 +138,7 @@ public class FileManager
         List<TagData> tagIndex = LoadTagIndex();
         if (tagIndex == null)
             tagIndex = new List<TagData>();
-            
+
         string[] filePaths = Directory.GetFiles(Instance.WorkingFolderPath);
 
         foreach (string path in filePaths)

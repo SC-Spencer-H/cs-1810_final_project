@@ -15,14 +15,28 @@ const prefixes = [
     "#",
 ];
 
+var sortOrder = [
+    "alphabetical",
+    "prefixes",
+];
+
+const sortFuncDictionary = {
+    "alphabetical": compareTagsAlphabetical,
+    "prefixes": compareTagsByPrefixes,
+}
+
 var allFiles = [];
 
 var tagIndex = [];
 
 var focusedFiles = [];
 
+var focusedTags = [];
+
+
 await UpdateFiles();
 await UpdateIndex();
+SortTags();
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -41,6 +55,7 @@ export async function UpdateFiles() {
 
 export async function UpdateIndex() {
     tagIndex = await FileService.FetchIndex();
+    focusedTags = [...tagIndex];
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -59,6 +74,10 @@ export function GetFocusedFilePaths() {
 
 export function GetTagIndex() {
     return [...tagIndex];
+}
+
+export function GetFocusedTagNames() {
+    return focusedTags.map(t => t.name);
 }
 
 export function AddTag(path, tag) {
@@ -87,16 +106,51 @@ export function AddAlias(tagName, aliasName) {
 
 export function RemoveAlias(tagName, aliasName) {
     const tag = GetTag(tagName);
-    
+
     if (tag.aliases === null)
         return;
-    
+
     const aliasIndex = tag.aliases.indexOf(aliasName);
     if (aliasIndex >= 0) {
         tag.aliases.splice(aliasIndex, 1);
     }
-    
+
     FileService.RemoveAlias(tagName, aliasName);
+}
+
+export function GetPrefixes() {
+    return [...prefixes];
+}
+
+export function GetSortOrder() {
+    return [...sortOrder];
+}
+
+export function ChangeSortOrder(sortOption, newIndex) {
+    const currentIndex = sortOrder.indexOf(sortOption)
+
+    if (Number.parseInt(newIndex) === Number.parseInt(currentIndex))
+        return;
+
+    if (newIndex > currentIndex) {
+        newIndex--;
+        if (newIndex < 0)
+            newIndex = 0;
+    }
+
+    sortOrder = sortOrder.filter(t => t !== sortOption);
+    sortOrder.splice(newIndex, 0, sortOption);
+}
+
+export function SortTags() {
+    focusedTags.sort((tagA, tagB) => {
+        return compareTags(tagA.name, tagB.name);
+    });
+
+    /// $clementine
+    /// $berry
+    /// #apple
+    /// #banana
 }
 
 export function GetTag(name) {
@@ -148,8 +202,8 @@ export function FilterByTags(filterValue) {
         filteredFiles = allFiles.filter(file => {
             return file.tags.some(tag => {
                 if (tag === filterValue)
-                   return true;
-                
+                    return true;
+
                 if (!GetAliases(tag))
                     return false;
 
@@ -220,4 +274,46 @@ function findPrefix(value) {
     }
 
     return potentialPrefixes[0];
+}
+
+function compareTags(tagA, tagB) {
+    var result;
+    for (const method of sortOrder) {
+        result = sortFuncDictionary[method](tagA, tagB);
+        if (result)
+            return result;
+    }
+
+    return result;
+}
+
+function compareTagsAlphabetical(tagA, tagB) {
+    const trimmedA = trimTag(tagA);
+    const trimmedB = trimTag(tagB);
+
+    return trimmedA.localeCompare(trimmedB, "en");
+}
+
+function compareTagsByPrefixes(tagA, tagB) {
+    const prefixA = findPrefix(tagA);
+    const prefixB = findPrefix(tagB);
+
+    if (!prefixA || !prefixB) {
+        if (!prefixA && !prefixB)
+            return 0;
+        if (prefixA)
+            return -1;
+        if (prefixB)
+            return 1;
+    }
+
+    const prefixAIndex = prefixes.indexOf(prefixA);
+    const prefixBIndex = prefixes.indexOf(prefixB);
+
+    if (prefixAIndex === prefixBIndex)
+        return 0;
+    if (prefixAIndex < prefixBIndex)
+        return -1;
+    if (prefixAIndex > prefixBIndex)
+        return 1;
 }

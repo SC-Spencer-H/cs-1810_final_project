@@ -143,6 +143,7 @@ function tagDropHandler(event) {
     const newIndex = event.currentTarget.getAttribute("index");
 
     FileManager.MoveTag(filePath, tagName, newIndex);
+    FileManager.SortTags();
     renderPreview();
 }
 
