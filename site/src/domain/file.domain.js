@@ -146,11 +146,6 @@ export function SortTags() {
     focusedTags.sort((tagA, tagB) => {
         return compareTags(tagA.name, tagB.name);
     });
-
-    /// $clementine
-    /// $berry
-    /// #apple
-    /// #banana
 }
 
 export function GetTag(name) {

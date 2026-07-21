@@ -29,7 +29,7 @@ function setupFilterForm() {
 function setupTagForm() {
     const tagFormElement = document.getElementById("add-tag-form");
     tagFormElement.addEventListener("submit", tagFormSubmitHandler);
-
+    
     const tagInputElement = document.getElementById("add-tag-input");
     tagInputElement.addEventListener("input", tagInputSuggestHandler);
 }
@@ -38,14 +38,15 @@ function setupTagForm() {
 
 async function folderFormSubmitHandler(event) {
     event.preventDefault();
-
+    
     const folderPathInputElement = document.getElementById("working-folder-input");
     const folderPath = folderPathInputElement.value;
-
+    
     await FileManager.UpdateWorkingFolder(folderPath);
     FileService.StoreRecentFolder(folderPath);
-
+    
     renderThumbnails();
+    renderRecentFoldersList();
 }
 
 function filterFormSubmitHandler(event) {

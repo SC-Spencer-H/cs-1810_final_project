@@ -4,11 +4,13 @@ export async function SetWorkingFolder(folderPath) {
     const request = {
         method: "POST",
         headers: {
-            "Content-Type": "text/plain"
+            "Content-Type": "application/json"
         },
-        body: folderPath,
+        body: JSON.stringify({
+            folderPath: folderPath
+        }),
     };
-    const response = await fetch(url + "folder?path=" + folderPath, request);
+    const response = await fetch(url + "folder", request);
 }
 
 export async function FetchFiles() {

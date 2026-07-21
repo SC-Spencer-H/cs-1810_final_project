@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "a/s6OdbSH2s=",
+  "dgSpecHash": "qDI1huE+qio=",
   "success": true,
   "projectFilePath": "C:\\Users\\Hallwaerd\\MyFolders\\School\\2026-SUMMER\\CS-1810\\(2026_07_31)_final_project\\cs-1810_final_project\\api\\api.csproj",
   "expectedPackageFiles": [
@@ -10,18 +10,5 @@
     "C:\\Users\\Hallwaerd\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.23\\microsoft.aspnetcore.app.ref.8.0.23.nupkg.sha512",
     "C:\\Users\\Hallwaerd\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\8.0.23\\microsoft.netcore.app.host.win-x64.8.0.23.nupkg.sha512"
   ],
-  "logs": [
-    {
-      "code": "NU1701",
-      "level": "Warning",
-      "message": "Package 'WindowsAPICodePack 8.0.15.2' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net8.0'. This package may not be fully compatible with your project.",
-      "projectPath": "C:\\Users\\Hallwaerd\\MyFolders\\School\\2026-SUMMER\\CS-1810\\(2026_07_31)_final_project\\cs-1810_final_project\\api\\api.csproj",
-      "warningLevel": 1,
-      "filePath": "C:\\Users\\Hallwaerd\\MyFolders\\School\\2026-SUMMER\\CS-1810\\(2026_07_31)_final_project\\cs-1810_final_project\\api\\api.csproj",
-      "libraryId": "WindowsAPICodePack",
-      "targetGraphs": [
-        "net8.0"
-      ]
-    }
-  ]
+  "logs": []
 }

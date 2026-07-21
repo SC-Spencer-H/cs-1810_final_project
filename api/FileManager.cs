@@ -1,7 +1,10 @@
+using System.IO;
 using System.Text.Json;
 using Microsoft.WindowsAPICodePack.Shell;
 using Microsoft.WindowsAPICodePack.Shell.PropertySystem;
 using Microsoft.WindowsAPICodePack.ShellExtensions;
+using System.Windows.Media.Imaging;
+using System.Drawing;
 
 public class FileManager
 {
@@ -30,9 +33,9 @@ public class FileManager
 
     /////////////////////////////////////////////////////////////////////////////////////////
 
-    public static void SetWorkingFolder(string path)
+    public static void SetWorkingFolder(FolderRequestArgs args)
     {
-        Instance.WorkingFolderPath = path;
+        Instance.WorkingFolderPath = args.FolderPath;
     }
 
     public static List<FileData> GetFiles()
@@ -41,23 +44,34 @@ public class FileManager
             throw new InvalidOperationException("Working folder is not set");
 
         string[] filePaths = Directory.GetFiles(Instance.WorkingFolderPath, "*.*", SearchOption.AllDirectories);
-
-        ShellObject[] shells = new ShellObject[filePaths.Length];
-
-        for (int i = 0; i < filePaths.Length; i++)
-        {
-            shells[i] = ShellObject.FromParsingName(filePaths[i]);
-        }
-
         List<FileData> fileList = new List<FileData>();
 
-        for (int i = 0; i < filePaths.Length; i++)
+        foreach (string path in filePaths)
         {
-            FileData data = new FileData(filePaths[i], shells[i].Properties.System.Keywords.Value);
-            fileList.Add(data);
+            JpegMetadataAdapter jpeg = new JpegMetadataAdapter(path);
+            string[] tags = jpeg.Metadata.Keywords.ToArray();
+            FileData fileData = new FileData(path, tags);
+            fileList.Add(fileData);
         }
 
         return fileList;
+
+        // ShellObject[] shells = new ShellObject[filePaths.Length];
+
+        // for (int i = 0; i < filePaths.Length; i++)
+        // {
+        //     shells[i] = ShellObject.FromParsingName(filePaths[i]);
+        // }
+
+        // List<FileData> fileList = new List<FileData>();
+
+        // for (int i = 0; i < filePaths.Length; i++)
+        // {
+        //     FileData data = new FileData(filePaths[i], shells[i].Properties.System.Keywords.Value);
+        //     fileList.Add(data);
+        // }
+
+        // return fileList;
     }
 
     public static List<TagData> GetIndex()
@@ -80,13 +94,17 @@ public class FileManager
 
     public static void SetTags(FileData data)
     {
-        ShellObject shell = ShellObject.FromParsingName(data.Path);
+        JpegMetadataAdapter jpeg = new JpegMetadataAdapter(data.Path);
+        jpeg.Metadata.Keywords = data.Tags.AsReadOnly();
+        jpeg.Save();
 
-        var writer = shell.Properties.GetPropertyWriter();
-        writer.WriteProperty(SystemProperties.System.Keywords, data.Tags);
-        writer.Close();
+        // ShellObject shell = ShellObject.FromParsingName(data.Path);
 
-        IndexWorkingFolder();
+        // var writer = shell.Properties.GetPropertyWriter();
+        // writer.WriteProperty(SystemProperties.System.Keywords, data.Tags);
+        // writer.Close();
+
+        // IndexWorkingFolder();
     }
 
     public static void AddAlias(AliasRequestArgs args)
@@ -143,22 +161,29 @@ public class FileManager
 
         foreach (string path in filePaths)
         {
-            ShellObject fileShell = ShellObject.FromParsingName(path);
-            string[] fileTags = fileShell.Properties.System.Keywords.Value;
-
-            foreach (string tag in fileTags)
+            JpegMetadataAdapter jpeg = new JpegMetadataAdapter(path);
+            string[] tags = jpeg.Metadata.Keywords.ToArray();
+            foreach (string tag in tags)
             {
                 if (tagIndex.Find(t => t.Name == tag) == null)
                 {
                     tagIndex.Add(new TagData(tag));
                 }
             }
+
+            // ShellObject fileShell = ShellObject.FromParsingName(path);
+            // string[] fileTags = fileShell.Properties.System.Keywords.Value;
+
+            // foreach (string tag in fileTags)
+            // {
+            //     if (tagIndex.Find(t => t.Name == tag) == null)
+            //     {
+            //         tagIndex.Add(new TagData(tag));
+            //     }
+            // }
         }
 
-        string tagIndexJson = JsonSerializer.Serialize(tagIndex, new JsonSerializerOptions() { WriteIndented = true });
-        string cleanedWorkingFolderPath = string.Join('-', Instance.WorkingFolderPath.Substring(3).Split('\\'));
-        string tagIndexFilePath = @$"TagIndices\{cleanedWorkingFolderPath}.json";
-        File.WriteAllText(tagIndexFilePath, tagIndexJson);
+        SaveTagIndex();
     }
 
     private static List<TagData> LoadTagIndex()
@@ -170,6 +195,8 @@ public class FileManager
         string tagIndexFilePath = @$"TagIndices\{cleanedWorkingFolderPath}.json";
         string tagIndexJson = File.ReadAllText(tagIndexFilePath);
         List<TagData> tagIndex = JsonSerializer.Deserialize<List<TagData>>(tagIndexJson);
+
+        Instance.TagIndex = tagIndex;
 
         return tagIndex;
     }
