@@ -10,7 +10,9 @@
 
 header {
     #sort-dropdown-button {
-        align-self: end;
+        margin-left: 80em;
+        justify-self: end;
+        align-self: center;
         color: var(--text-color);
         background-color: var(--nav-color);
         text-decoration: none;

@@ -1,65 +1,61 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/src/style/root.css" />
-    <link rel="stylesheet" href="/src/style/tag-index.style.css" />
-    <script type="module" src="/src/ui/tag-index.ui.js"></script>
-    <title>Tag Manager</title>
-  </head>
-  <body>
-    <header>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/src/style/root.css" />
+  <link rel="stylesheet" href="/src/style/tag-index.style.css" />
+  <script type="module" src="/src/ui/tag-index.ui.js"></script>
+  <title>Tag Manager</title>
+</head>
+
+<body>
+  <header>
+    <form id="filter-form">
+      <label for="filters">Search</label>
+      <input type="text" name="filters" id="filter-input" list="filter-suggestions" autocomplete="off" />
+      <datalist id="filter-suggestions"></datalist>
+    </form>
+    <button id="sort-dropdown-button">Sort
+      <div id="sort-dropdown-menu-container">
+        <div id="sort-drop-divs-container"></div>
+        <ol id="sort-dropdown-menu"></ol>
+      </div>
+    </button>
+  </header>
+  <div id="nav-and-main-container">
+    <nav>
+      <p id="preview-tag-name">No Tag Selected</p>
+      <form id="add-alias-form" autocomplete="off" hidden>
+        <div class="input-and-label-container">
+          <label for="aliasName">Add Alias</label>
+          <input type="text" list="alias-suggestions" name="aliasName" id="add-alias-input" />
+          <datalist id="tag-suggestions"></datalist>
+        </div>
+      </form>
+      <div id="alias-list-container">
+        <div id="alias-drop-divs-container"></div>
+        <ol id="alias-list">
+      </div>
+    </nav>
+    <main>
+      <table id="tag-table"></table>
+    </main>
+  </div>
+  <footer>
+    <div id="folder-controls-container">
       <form id="set-working-folder-form">
         <label for="workingFolder">Open Folder</label>
-        <input
-          type="text"
-          name="workingFolder"
-          id="working-folder-input"
-          list="recent-folders"
-          autocomplete="off"
-        />
+        <input type="text" name="workingFolder" id="working-folder-input" list="recent-folders" autocomplete="off" />
         <datalist id="recent-folders"></datalist>
       </form>
-      <button id="sort-dropdown-button">Sort
-        <div id="sort-dropdown-menu-container">
-          <div id="sort-drop-divs-container"></div>
-          <ol id="sort-dropdown-menu"></ol>
-        </div>
-      </button>
-      <form id="filter-form">
-        <label for="filters">Search</label>
-        <input type="text" name="filters" id="filter-input" list="filter-suggestions" autocomplete="off"/>
-        <datalist id="filter-suggestions"></datalist>
-      </form>
-    </header>
-    </header>
-    <div id="nav-and-main-container">
-      <nav>
-        <p id="preview-tag-name">No Tag Selected</p>
-        <form id="add-alias-form" autocomplete="off" hidden>
-          <div class="input-and-label-container">
-            <label for="aliasName">Add Alias</label>
-            <input
-              type="text"
-              list="alias-suggestions"
-              name="aliasName"
-              id="add-alias-input"
-            />
-            <datalist id="tag-suggestions"></datalist>
-          </div>
-        </form>
-        <div id="alias-list-container">
-          <div id="alias-drop-divs-container"></div>
-          <ol id="alias-list">
-        </div>
-      </nav>
-      <main>
-        <table id="tag-table"></table>
-      </main>
+      <button id="index-folder-button">Index Folder</button>
     </div>
-    <footer>
+    <div id="page-links-container">
       <a href="/src/view/file-explorer.html">Files</a>
-    </footer>
-  </body>
+    </div>
+  </footer>
+</body>
+
 </html>

@@ -1,8 +1,5 @@
 using System.IO;
 using System.Text.Json;
-using Microsoft.WindowsAPICodePack.Shell;
-using Microsoft.WindowsAPICodePack.Shell.PropertySystem;
-using Microsoft.WindowsAPICodePack.ShellExtensions;
 using System.Windows.Media.Imaging;
 using System.Drawing;
 
@@ -35,46 +32,40 @@ public class FileManager
 
     public static void SetWorkingFolder(FolderRequestArgs args)
     {
-        Instance.WorkingFolderPath = args.FolderPath;
+        if (args.FolderPath != Instance.WorkingFolderPath)
+        {
+            Instance.WorkingFolderPath = args.FolderPath;
+            Instance.TagIndex = LoadTagIndex();
+            if (Instance.TagIndex == null)
+                Instance.TagIndex = new List<TagData>();
+        }
     }
 
-    public static List<FileData> GetFiles()
+    public static List<FileData> GetAllFileData()
     {
         if (Instance.WorkingFolderPath == null)
             throw new InvalidOperationException("Working folder is not set");
 
-        string[] filePaths = Directory.GetFiles(Instance.WorkingFolderPath, "*.*", SearchOption.AllDirectories);
+        string[] filePaths = Directory.GetFiles(Instance.WorkingFolderPath, "*.jpg", SearchOption.AllDirectories);
+        filePaths.Concat(Directory.GetFiles(Instance.WorkingFolderPath, "*.jpeg", SearchOption.AllDirectories)).ToArray();
         List<FileData> fileList = new List<FileData>();
 
         foreach (string path in filePaths)
-        {
+        {   
             JpegMetadataAdapter jpeg = new JpegMetadataAdapter(path);
-            string[] tags = jpeg.Metadata.Keywords.ToArray();
+            string[] tags = null;
+            if (jpeg.Metadata.Keywords != null)
+            {
+                tags = jpeg.Metadata.Keywords.ToArray();
+            }
             FileData fileData = new FileData(path, tags);
             fileList.Add(fileData);
         }
 
         return fileList;
-
-        // ShellObject[] shells = new ShellObject[filePaths.Length];
-
-        // for (int i = 0; i < filePaths.Length; i++)
-        // {
-        //     shells[i] = ShellObject.FromParsingName(filePaths[i]);
-        // }
-
-        // List<FileData> fileList = new List<FileData>();
-
-        // for (int i = 0; i < filePaths.Length; i++)
-        // {
-        //     FileData data = new FileData(filePaths[i], shells[i].Properties.System.Keywords.Value);
-        //     fileList.Add(data);
-        // }
-
-        // return fileList;
     }
 
-    public static List<TagData> GetIndex()
+    public static List<TagData> GetTagIndex()
     {
         if (Instance.WorkingFolderPath == null)
             throw new InvalidOperationException("Working folder is not set");
@@ -92,23 +83,75 @@ public class FileManager
         return Results.File(path, "image/jpg");
     }
 
-    public static void SetTags(FileData data)
+    /////////////////////////////////////////////////////////////////////////////////////////
+
+    public static IResult AddTag(TagRequestArgs args)
     {
-        JpegMetadataAdapter jpeg = new JpegMetadataAdapter(data.Path);
-        jpeg.Metadata.Keywords = data.Tags.AsReadOnly();
+        if (Instance.WorkingFolderPath == null)
+            return Results.Problem("Working folder is not set");
+
+        JpegMetadataAdapter jpeg = new JpegMetadataAdapter(args.FilePath);
+        List<string> tagList = jpeg.Metadata.Keywords.ToList();
+
+        tagList.Add(args.TagName);
+
+        jpeg.Metadata.Keywords = tagList.ToArray().AsReadOnly();
         jpeg.Save();
 
-        // ShellObject shell = ShellObject.FromParsingName(data.Path);
+        if (Instance.TagIndex.Find(t => t.Name == args.TagName) == null)
+        {
+            Instance.TagIndex.Add(new TagData(args.TagName));
+            SaveTagIndex();
+        }
 
-        // var writer = shell.Properties.GetPropertyWriter();
-        // writer.WriteProperty(SystemProperties.System.Keywords, data.Tags);
-        // writer.Close();
-
-        // IndexWorkingFolder();
+        return Results.Ok();
     }
 
-    public static void AddAlias(AliasRequestArgs args)
+    public static IResult RemoveTag(TagRequestArgs args)
     {
+        if (Instance.WorkingFolderPath == null)
+            return Results.Problem("Working folder is not set");
+
+        JpegMetadataAdapter jpeg = new JpegMetadataAdapter(args.FilePath);
+        List<string> tagList = jpeg.Metadata.Keywords.ToList();
+
+
+        bool result = tagList.Remove(args.TagName);
+        if (!result)
+            return Results.Problem("Tag does not exist");
+
+        jpeg.Metadata.Keywords = tagList.ToArray().AsReadOnly();
+        jpeg.Save();
+
+        return Results.Ok();
+    }
+
+    public static IResult MoveTag(TagRequestArgs args)
+    {
+        if (Instance.WorkingFolderPath == null)
+            return Results.Problem("Working folder is not set");
+
+        JpegMetadataAdapter jpeg = new JpegMetadataAdapter(args.FilePath);
+        List<string> tagList = jpeg.Metadata.Keywords.ToList();
+
+        string tag = tagList.Find(t => t == args.TagName);
+        if (tag == null)
+            return Results.Problem("Tag does not exist");
+
+        tagList.Remove(tag);
+        tagList.Insert(args.InsertAt, tag);
+
+        jpeg.Metadata.Keywords = tagList.ToArray().AsReadOnly();
+        jpeg.Save();
+
+        return Results.Ok();
+    }
+
+    public static IResult AddAlias(AliasRequestArgs args)
+    {
+        if (Instance.WorkingFolderPath == null)
+            return Results.Problem("Working folder is not set");
+
         var test = Instance.TagIndex;
 
         TagData tag = Instance.TagIndex.Find(t => t.Name == args.TagName);
@@ -119,18 +162,25 @@ public class FileManager
         tag.Aliases.Add(args.AliasName);
 
         SaveTagIndex();
+
+        return Results.Ok();
     }
 
-    public static void RemoveAlias(AliasRequestArgs args)
+    public static IResult RemoveAlias(AliasRequestArgs args)
     {
+        if (Instance.WorkingFolderPath == null)
+            return Results.Problem("Working folder is not set");
+
         TagData tag = Instance.TagIndex.Find(t => t.Name == args.TagName);
 
         if (tag.Aliases == null)
-            return;
+            return Results.Ok();
 
         tag.Aliases.Remove(args.AliasName);
 
         SaveTagIndex();
+
+        return Results.Ok();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////
@@ -148,44 +198,6 @@ public class FileManager
         File.WriteAllText(tagIndexFilePath, tagIndexJson);
     }
 
-    private static void IndexWorkingFolder()
-    {
-        if (Instance.WorkingFolderPath == null)
-            throw new InvalidOperationException("Working folder is not set");
-
-        List<TagData> tagIndex = LoadTagIndex();
-        if (tagIndex == null)
-            tagIndex = new List<TagData>();
-
-        string[] filePaths = Directory.GetFiles(Instance.WorkingFolderPath);
-
-        foreach (string path in filePaths)
-        {
-            JpegMetadataAdapter jpeg = new JpegMetadataAdapter(path);
-            string[] tags = jpeg.Metadata.Keywords.ToArray();
-            foreach (string tag in tags)
-            {
-                if (tagIndex.Find(t => t.Name == tag) == null)
-                {
-                    tagIndex.Add(new TagData(tag));
-                }
-            }
-
-            // ShellObject fileShell = ShellObject.FromParsingName(path);
-            // string[] fileTags = fileShell.Properties.System.Keywords.Value;
-
-            // foreach (string tag in fileTags)
-            // {
-            //     if (tagIndex.Find(t => t.Name == tag) == null)
-            //     {
-            //         tagIndex.Add(new TagData(tag));
-            //     }
-            // }
-        }
-
-        SaveTagIndex();
-    }
-
     private static List<TagData> LoadTagIndex()
     {
         if (Instance.WorkingFolderPath == null)
@@ -193,11 +205,55 @@ public class FileManager
 
         string cleanedWorkingFolderPath = string.Join('-', Instance.WorkingFolderPath.Substring(3).Split('\\'));
         string tagIndexFilePath = @$"TagIndices\{cleanedWorkingFolderPath}.json";
-        string tagIndexJson = File.ReadAllText(tagIndexFilePath);
-        List<TagData> tagIndex = JsonSerializer.Deserialize<List<TagData>>(tagIndexJson);
+        if (File.Exists(tagIndexFilePath))
+        {
+            string tagIndexJson = File.ReadAllText(tagIndexFilePath);
+            return JsonSerializer.Deserialize<List<TagData>>(tagIndexJson);
+        }
+        else
+            return null;
+    }
 
-        Instance.TagIndex = tagIndex;
+    public static void IndexWorkingFolder()
+    {
+        if (Instance.WorkingFolderPath == null)
+            throw new InvalidOperationException("Working folder is not set");
 
-        return tagIndex;
+        if (Instance.TagIndex == null)
+            Instance.TagIndex = LoadTagIndex();
+
+        List<TagData> tagIndex = Instance.TagIndex;
+        if (tagIndex == null)
+            tagIndex = new List<TagData>();
+
+        string[] filePaths = Directory.GetFiles(Instance.WorkingFolderPath, "*.*", SearchOption.AllDirectories);
+        List<TagData> unusedTags = tagIndex.ToList();
+
+        foreach (string path in filePaths)
+        {
+            JpegMetadataAdapter jpeg = new JpegMetadataAdapter(path);
+            if (jpeg.Metadata.Keywords == null)
+                continue;
+            string[] tags = jpeg.Metadata.Keywords.ToArray();
+            foreach (string tagName in tags)
+            {
+                TagData tag = tagIndex.Find(t => t.Name == tagName);
+                if (tag != null)
+                {
+                    unusedTags.Remove(tag);
+                }
+                else
+                {
+                    tagIndex.Add(new TagData(tagName));
+                }
+            }
+        }
+
+        foreach (TagData tag in unusedTags)
+        {
+            tagIndex.Remove(tag);
+        }
+
+        SaveTagIndex();
     }
 }

@@ -47,3 +47,11 @@ After I've got all these core features implemented, I can work on adding sorting
 - [X] Add sorting options: alphabetical, date added, etc.
 - [X] Add nav link to view tag index on separate page
 - [X] Target folder of API can be configured
+
+### Additional Goals
+- [X] Change metadata editing method
+- [X] Remove unused tags from tag index
+- [X] Set working folder on any page load
+- [X] Resync file data and tag index on any page load
+- [X] Add button for manual indexing
+- [ ] Validate all post request responses

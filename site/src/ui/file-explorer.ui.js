@@ -6,9 +6,10 @@ import * as FileService from "/src/service/file.service.js";
 setupFolderForm();
 setupFilterForm();
 setupTagForm();
+setupIndexFolderButton();
 
 if (FileService.FetchRecentFolders()) {
-    await FileManager.UpdateFiles();
+    await FileManager.UpdateFileList();
     renderThumbnails();
 }
 
@@ -32,6 +33,11 @@ function setupTagForm() {
     
     const tagInputElement = document.getElementById("add-tag-input");
     tagInputElement.addEventListener("input", tagInputSuggestHandler);
+}
+
+function setupIndexFolderButton() {
+    const indexFolderButtonElement = document.getElementById("index-folder-button");
+    indexFolderButtonElement.addEventListener("click", indexFolderButtonClickHandler)
 }
 
 // EVENTS ///////////////////////////////////////////////////////////////////////////////////
@@ -59,7 +65,7 @@ function filterFormSubmitHandler(event) {
     renderThumbnails();
 }
 
-function tagFormSubmitHandler(event) {
+async function tagFormSubmitHandler(event) {
     event.preventDefault();
 
     const tagFormElement = document.getElementById("add-tag-form");
@@ -73,7 +79,7 @@ function tagFormSubmitHandler(event) {
     if (tagName === undefined || tagName === "")
         return;
 
-    FileManager.AddTag(previewedFilePath, tagName);
+    await FileManager.AddTag(previewedFilePath, tagName);
 
     tagFormElement.reset();
     renderPreview();
@@ -107,13 +113,13 @@ function tagInputSuggestHandler(event) {
     }
 }
 
-function removeTagHandler(event) {
+async function removeTagHandler(event) {
     const previewTabElement = document.querySelector("nav");
 
     const tagName = event.currentTarget.parentElement.getAttribute("tagName");
     const filePath = previewTabElement.getAttribute("previewed-file-path");
 
-    FileManager.RemoveTag(filePath, tagName);
+    await FileManager.RemoveTag(filePath, tagName);
     renderPreview();
 }
 
@@ -136,16 +142,20 @@ function tagDragEndHandler(event) {
     tagDropDivsContainer.style.zIndex = "0";
 }
 
-function tagDropHandler(event) {
+async function tagDropHandler(event) {
     const previewTabElement = document.querySelector("nav");
 
     const filePath = previewTabElement.getAttribute("previewed-file-path");
     const tagName = event.dataTransfer.getData("tagName");
-    const newIndex = event.currentTarget.getAttribute("index");
+    const targetIndex = event.currentTarget.getAttribute("index");
 
-    FileManager.MoveTag(filePath, tagName, newIndex);
+    await FileManager.MoveTag(filePath, tagName, targetIndex);
     FileManager.SortTags();
     renderPreview();
+}
+
+async function indexFolderButtonClickHandler(event) {
+    await FileManager.IndexWorkingFolder();
 }
 
 // RENDER ///////////////////////////////////////////////////////////////////////////////////
@@ -187,10 +197,10 @@ function renderPreview() {
             tagListElement.appendChild(tagElement);
 
             var dropDiv = buildTagDropDiv(i);
-            dropDiv.setAttribute("order", "top")
+            dropDiv.setAttribute("order", "before")
             tagDropDivsContainer.appendChild(dropDiv);
             dropDiv = buildTagDropDiv(i + 1);
-            dropDiv.setAttribute("order", "bottom")
+            dropDiv.setAttribute("order", "after")
             tagDropDivsContainer.appendChild(dropDiv);
         }
     }

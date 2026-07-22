@@ -27,7 +27,9 @@
   },
   {
     "name": "#dog",
-    "aliases": null
+    "aliases": [
+      "#perro"
+    ]
   },
   {
     "name": "#otter",
@@ -35,10 +37,6 @@
   },
   {
     "name": "#seal",
-    "aliases": null
-  },
-  {
-    "name": "#silly",
     "aliases": null
   }
 ]

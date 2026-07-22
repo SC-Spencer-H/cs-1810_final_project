@@ -5,6 +5,7 @@ import * as FileManager from "/src/domain/file.domain.js";
 setupAliasForm();
 setupSortDropdown();
 renderTagTable();
+setupIndexFolderButton();
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -24,9 +25,14 @@ function setupSortDropdown() {
     renderSortDropdown();
 }
 
+function setupIndexFolderButton() {
+    const indexFolderButtonElement = document.getElementById("index-folder-button");
+    indexFolderButtonElement.addEventListener("click", indexFolderButtonClickHandler)
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////
 
-function aliasFormSubmitHandler(event) {
+async function aliasFormSubmitHandler(event) {
     event.preventDefault();
 
     const previewTabElement = document.querySelector("nav");
@@ -38,20 +44,21 @@ function aliasFormSubmitHandler(event) {
     if (!aliasName)
         return;
 
-    FileManager.AddAlias(tagName, aliasName);
+    await FileManager.AddAlias(tagName, aliasName);
 
-    event.currentTarget.reset();
+    const aliasFormElement = document.getElementById("add-alias-form");
+    aliasFormElement.reset();
 
     renderPreview();
 }
 
-function removeAliasHandler(event) {
+async function removeAliasHandler(event) {
     const previewTabElement = document.querySelector("nav");
 
     const aliasName = event.currentTarget.parentElement.getAttribute("alias-name");
     const tagName = previewTabElement.getAttribute("previewed-tag-name");
 
-    FileManager.RemoveAlias(tagName, aliasName);
+    await FileManager.RemoveAlias(tagName, aliasName);
     renderPreview();
 }
 
@@ -98,6 +105,11 @@ function sortMenuDropHandler(event) {
     FileManager.ChangeSortOrder(sortOption, newIndex);
     FileManager.SortTags();
     renderSortDropdown();
+    renderTagTable();
+}
+
+async function indexFolderButtonClickHandler(event) {
+    await FileManager.IndexWorkingFolder();
     renderTagTable();
 }
 

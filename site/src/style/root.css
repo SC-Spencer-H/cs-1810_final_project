@@ -18,6 +18,7 @@ body {
 
 header {
     display: flex;
+    flex-flow: row-reverse;
     justify-content: space-between;
     background-color: var(--header-color);
     padding: 2em;
@@ -27,6 +28,7 @@ header {
     form {
         display: flex;
         flex-direction: column;
+        justify-self: right;
 
         input {
             margin: .5em 0;
@@ -99,11 +101,11 @@ nav {
             padding-top: 2.3em;
         }
 
-        [order="top"].tag-order-preview {
+        [order="before"].tag-order-preview {
             border-top: solid .2em var(--main-color);
         }
 
-        [order="bottom"].tag-order-preview {
+        [order="after"].tag-order-preview {
             border-bottom: solid .2em var(--main-color);
         }
     }
@@ -206,12 +208,50 @@ main {
 }
 
 footer {
-    display:flex;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
     background-color: var(--footer-color);
     padding: 2em;
     z-index: 2;
     box-shadow: 0 0 .4em var(--shadow-color);
+
+    #folder-controls-container {
+        display: flex;
+    }
+
+    #index-folder-button {
+        color: var(--text-color);
+        background-color: var(--nav-color);
+        text-decoration: none;
+        margin: 1em;
+        padding: 0.8em 0.6em;
+        width: fit-content;
+
+        border: none;
+        border-radius: .8em;
+        box-shadow: .15em .15em .1em var(--shadow-color);
+    }
+
+    #page-links-container {
+        justify-self: center;
+        align-self: center;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+
+        input {
+            margin: .5em 0;
+            background-color: var(--nav-color);
+            color: var(--text-color);
+            border: none;
+            border-radius: .5em;
+            padding: .7em 1em;
+            box-shadow: inset .2em .2em .2em var(--main-color);
+            width: 35em;
+        }
+    }
 
     a {
         color: var(--text-color);

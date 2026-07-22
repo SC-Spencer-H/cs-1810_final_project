@@ -29,13 +29,15 @@ var allFiles = [];
 
 var tagIndex = [];
 
-var focusedFiles = [];
+var focusedFilePaths = [];
 
-var focusedTags = [];
+var focusedTagNames = [];
 
+/////////////////////////////////////////////////////////////////////////////////////////////
 
-await UpdateFiles();
-await UpdateIndex();
+await FileService.LoadRecentFolder();
+await UpdateFileList();
+await UpdateTagIndex();
 SortTags();
 
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -43,19 +45,19 @@ SortTags();
 export async function UpdateWorkingFolder(folderPath) {
     workingFolderPath = folderPath;
     await FileService.SetWorkingFolder(folderPath);
-    await UpdateFiles();
-    focusedFiles = [...allFiles];
-    await UpdateIndex();
+    await UpdateFileList();
+    focusedFilePaths = allFiles.map(f => f.path);
+    await UpdateTagIndex();
 }
 
-export async function UpdateFiles() {
+export async function UpdateFileList() {
     allFiles = await FileService.FetchFiles();
-    focusedFiles = [...allFiles];
+    focusedFilePaths = allFiles.map(f => f.path);
 }
 
-export async function UpdateIndex() {
+export async function UpdateTagIndex() {
     tagIndex = await FileService.FetchIndex();
-    focusedTags = [...tagIndex];
+    focusedTagNames = tagIndex.map(t => t.name);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -64,47 +66,96 @@ export function GetFile(path) {
     return allFiles.find(f => f.path === path);
 }
 
-export function GetAllFilePaths() {
-    return allFiles.map(f => f.path);
-}
-
-export function GetFocusedFilePaths() {
-    return focusedFiles.map(f => f.path);
-}
-
-export function GetTagIndex() {
-    return [...tagIndex];
-}
-
-export function GetFocusedTagNames() {
-    return focusedTags.map(t => t.name);
-}
-
-export function AddTag(path, tag) {
-    const file = allFiles.find(f => f.path === path);
-    if (file.tags === null)
-        file.tags = [];
-    file.tags = [...file.tags, tag];
-
-    FileService.SyncFileTags(file);
+export function GetTag(name) {
+    return tagIndex.find(t => t.name === name);
 }
 
 export function GetAliases(tagName) {
     return GetTag(tagName).aliases;
 }
 
-export function AddAlias(tagName, aliasName) {
+export function GetAllFilePaths() {
+    return allFiles.map(f => f.path);
+}
+
+export function GetAllTagNames() {
+    return tagIndex.map(t => t.name);
+}
+
+export function GetFocusedFilePaths() {
+    return [...focusedFilePaths];
+}
+
+export function GetFocusedTagNames() {
+    return [...focusedTagNames];
+}
+
+export function GetPrefixes() {
+    return [...prefixes];
+}
+
+export function GetSortOrder() {
+    return [...sortOrder];
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+export async function AddTag(filePath, tagName) {
+    await FileService.AddTag(filePath, tagName);
+
+    const file = allFiles.find(f => f.path === filePath);
+    if (file.tags === null)
+        file.tags = [];
+    file.tags = [...file.tags, tagName];
+
+    if (!GetTag(tagName)) {
+        const tag = {
+            name: tagName,
+            aliases: []
+        };
+        tagIndex.push(tag);
+    }
+}
+
+export async function RemoveTag(filePath, tagName) {
+    await FileService.RemoveTag(filePath, tagName);
+
+    const file = allFiles.find(f => f.path === filePath);
+    file.tags = file.tags.filter(t => t !== tagName);
+}
+
+export async function MoveTag(filePath, tagName, targetIndex) {
+    const file = allFiles.find(f => f.path === filePath);
+    const currentIndex = file.tags.indexOf(tagName);
+    if (Number.parseInt(targetIndex) === Number.parseInt(currentIndex))
+        return;
+
+    if (targetIndex > currentIndex) {
+        targetIndex--;
+        if (targetIndex < 0)
+            targetIndex = 0;
+    }
+
+    await FileService.MoveTag(filePath, tagName, targetIndex);
+
+    file.tags = file.tags.filter(t => t !== tagName);
+    file.tags.splice(targetIndex, 0, tagName);
+}
+
+export async function AddAlias(tagName, aliasName) {
+    await FileService.AddAlias(tagName, aliasName);
+
     const tag = GetTag(tagName);
 
     if (tag.aliases === null)
         tag.aliases = [];
 
     tag.aliases.push(aliasName);
-
-    FileService.AddAlias(tagName, aliasName);
 }
 
-export function RemoveAlias(tagName, aliasName) {
+export async function RemoveAlias(tagName, aliasName) {
+    await FileService.RemoveAlias(tagName, aliasName);
+
     const tag = GetTag(tagName);
 
     if (tag.aliases === null)
@@ -114,16 +165,19 @@ export function RemoveAlias(tagName, aliasName) {
     if (aliasIndex >= 0) {
         tag.aliases.splice(aliasIndex, 1);
     }
-
-    FileService.RemoveAlias(tagName, aliasName);
 }
 
-export function GetPrefixes() {
-    return [...prefixes];
+export async function IndexWorkingFolder() {
+    await FileService.IndexWorkingFolder();
+    await UpdateTagIndex();
 }
 
-export function GetSortOrder() {
-    return [...sortOrder];
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+export function SortTags() {
+    focusedTagNames.sort((tagA, tagB) => {
+        return compareTags(tagA, tagB);
+    });
 }
 
 export function ChangeSortOrder(sortOption, newIndex) {
@@ -140,40 +194,6 @@ export function ChangeSortOrder(sortOption, newIndex) {
 
     sortOrder = sortOrder.filter(t => t !== sortOption);
     sortOrder.splice(newIndex, 0, sortOption);
-}
-
-export function SortTags() {
-    focusedTags.sort((tagA, tagB) => {
-        return compareTags(tagA.name, tagB.name);
-    });
-}
-
-export function GetTag(name) {
-    return tagIndex.find(t => t.name === name);
-}
-
-export function RemoveTag(path, tag) {
-    const file = allFiles.find(f => f.path === path);
-    file.tags = file.tags.filter(t => t !== tag);
-
-    FileService.SyncFileTags(file);
-}
-
-export function MoveTag(path, tag, index) {
-    const file = allFiles.find(f => f.path === path);
-    const tagIndex = file.tags.indexOf(tag);
-    if (Number.parseInt(index) === Number.parseInt(tagIndex))
-        return;
-
-    if (index > tagIndex) {
-        index--;
-        if (index < 0)
-            index = 0;
-    }
-    file.tags = file.tags.filter(t => t !== tag);
-    file.tags.splice(index, 0, tag);
-
-    FileService.SyncFileTags(file);
 }
 
 export function GetTagSuggestions(input) {
@@ -198,7 +218,7 @@ export function FilterByTags(filterValue) {
             return file.tags.some(tag => {
                 if (tag === filterValue)
                     return true;
-
+                
                 if (!GetAliases(tag))
                     return false;
 
@@ -223,7 +243,7 @@ export function FilterByTags(filterValue) {
         });
     }
 
-    focusedFiles = filteredFiles;
+    focusedFilePaths = filteredFiles.map(f => f.path);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -273,8 +293,8 @@ function findPrefix(value) {
 
 function compareTags(tagA, tagB) {
     var result;
-    for (const method of sortOrder) {
-        result = sortFuncDictionary[method](tagA, tagB);
+    for (const sortMethod of sortOrder) {
+        result = sortFuncDictionary[sortMethod](tagA, tagB);
         if (result)
             return result;
     }
